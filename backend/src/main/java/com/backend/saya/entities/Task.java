@@ -16,7 +16,7 @@ public class Task {
 	private Long id;
 	private String name;
 	private String description;
-	private Difficulty difficulty;
+	private Integer difficulty;
 	private Date finalDate;
 	
 	public Task() {
@@ -26,7 +26,7 @@ public class Task {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.difficulty = difficulty;
+		setDifficulty(difficulty);
 		this.finalDate = finalDate;
 	}
 
@@ -55,11 +55,11 @@ public class Task {
 	}
 
 	public Difficulty getDifficulty() {
-		return difficulty;
+		return Difficulty.valueOf(difficulty);
 	}
 
 	public void setDifficulty(Difficulty difficulty) {
-		this.difficulty = difficulty;
+		this.difficulty = difficulty.getCode();
 	}
 
 	public Date getFinalDate() {
