@@ -35,7 +35,7 @@ public class TaskController {
 	public Task findById(@PathVariable Long id) {
 		return taskRepository.findById(id).get();
 	}
-	@PostMapping("")
+	/*@PostMapping("")
 	public void create(@RequestBody Task task) {
 		taskRepository.save(task);
 	}
@@ -57,5 +57,5 @@ public class TaskController {
 			throw new TaskNotFoundException();
 		}
 		taskRepository.delete(task.get());
-	}
+	} */
 }
