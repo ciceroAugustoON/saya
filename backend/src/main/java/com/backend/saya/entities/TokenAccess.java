@@ -6,7 +6,7 @@ import java.util.Date;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+/* Future implements */
 public class TokenAccess implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

@@ -13,17 +13,18 @@ import com.backend.saya.entities.Task;
 import com.backend.saya.entities.User;
 import com.backend.saya.entities.enumeration.Difficulty;
 import com.backend.saya.repositories.UserRepository;
+import com.backend.saya.services.LoginService;
 
 @Configuration
 @Profile("test")
 public class TestConfig implements CommandLineRunner{
 	@Autowired
-	private UserRepository userRepository;
+	private LoginService loginService;
 
 	@Override
 	public void run(String... args) throws Exception {
-		User user = new User(1L, "Cicero", "1234");
-		userRepository.save(user);
+		loginService.register("a@gmail.com", "Ana", "asdf");
+		
 	}
 	
 }

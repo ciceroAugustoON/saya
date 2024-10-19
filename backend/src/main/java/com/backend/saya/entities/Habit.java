@@ -6,7 +6,7 @@ import java.util.List;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+/* Future implements */
 public class Habit {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
