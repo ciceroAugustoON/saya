@@ -15,10 +15,9 @@ public class LoginService {
 	private UserRepository userRepository;
 	
 	public String login(String username, String password) {
-		var user = new User(null, username, password);
-		user = userRepository.findOne(Example.of(user)).get();
-		if (user != null) {
-			return "token-access";
+		var user = new User(null, username, LoginSecurity.encode(password));
+		if (userRepository.exists(Example.of(user))) {
+			return LoginSecurity.encode("teste");
 		} else {
 			throw new NotFoundException("User not found");
 		}
@@ -30,14 +29,16 @@ public class LoginService {
 		if (userRepository.exists(Example.of(user))) {
 			throw new ConflictException("Email already registered");
 		}
+		if (userRepository.exists(Example.of(new User(null, username, null)))) {
+			throw new ConflictException("Username already registered");
+		}
 		user.setUsername(username);
-		user.setPassword(password);
+		user.setPassword(LoginSecurity.encode(password));
 		user = userRepository.save(user);
 		if (user != null) {
-			return "token-access";
+			return LoginSecurity.encode("teste");
 		} else {
 			throw new RuntimeException("Error in user register");
 		}
 	}
-	
 }
