@@ -1,14 +1,15 @@
 package com.backend.saya.entities;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "tb_objectives")
@@ -19,17 +20,16 @@ public class Objectives implements Serializable{
 	private Long id;
 	private Integer dailySpendedHours;
 	private Integer metaReduction;
-	@Transient
-	private Map<Hobbies, Relatory> hobbies;
+	@OneToMany
+	private List<Habit> habits = new ArrayList<Habit>();
 	
 	public Objectives() {
 		
 	}
 
-	public Objectives(Integer dailySpendedHours, Integer metaReduction, Map<Hobbies, Relatory> hobbies) {
+	public Objectives(Integer dailySpendedHours, Integer metaReduction) {
 		this.dailySpendedHours = dailySpendedHours;
 		this.metaReduction = metaReduction;
-		this.hobbies = hobbies;
 	}
 
 	public Long getId() {
@@ -55,12 +55,16 @@ public class Objectives implements Serializable{
 	public void setMetaReduction(Integer metaReduction) {
 		this.metaReduction = metaReduction;
 	}
-
-	public Map<Hobbies, Relatory> getHobbies() {
-		return hobbies;
+	
+	public List<Habit> getHabits() {
+		return habits;
 	}
 
-	public void setHobbies(Map<Hobbies, Relatory> hobbies) {
-		this.hobbies = hobbies;
+	public void addHabit(Habit habit) {
+		habits.add(habit);
+	}
+	
+	public void removeDailyTask(Habit habit) {
+		habits.remove(habit);
 	}
 }

@@ -1,30 +1,35 @@
 package com.backend.saya.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-/* Future implements */
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_hobbies")
 public class Habit {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	private String name;
-	private Integer todayMinutes;
-	private Integer monthMinutes;
-	private List<Task> tasks = new ArrayList<>();
 	
 	public Habit() {
-		
 	}
 
-	public Habit(String name, Integer todayMinutes, Integer monthMinutes, List<Task> tasks) {
+	public Habit(Long id, String name) {
+		this.id = id;
 		this.name = name;
-		this.todayMinutes = todayMinutes;
-		this.monthMinutes = monthMinutes;
-		this.tasks = tasks;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -35,31 +40,26 @@ public class Habit {
 		this.name = name;
 	}
 
-	public Integer getTodayMinutes() {
-		return todayMinutes;
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
 	}
 
-	public void setTodayMinutes(Integer todayMinutes) {
-		this.todayMinutes = todayMinutes;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Habit other = (Habit) obj;
+		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
 
-	public Integer getMonthMinutes() {
-		return monthMinutes;
-	}
-
-	public void setMonthMinutes(Integer monthMinutes) {
-		this.monthMinutes = monthMinutes;
-	}
-
-	public List<Task> getTasks() {
-		return tasks;
-	}
-
-	public void addTask(Task task) {
-		this.tasks.add(task);
+	@Override
+	public String toString() {
+		return "Hobbies [id=" + id + ", name=" + name + "]";
 	}
 	
-	public void removeTask(Task task) {
-		this.tasks.remove(task);
-	}
 }

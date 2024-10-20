@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,17 +22,17 @@ public class Task implements Serializable {
 	private String name;
 	private String description;
 	private Integer difficulty;
-	private Date finalDate;
+	@ManyToOne(targetEntity = Habit.class)
+	private Long habit;
 	
 	public Task() {
 	}
 	
-	public Task(Long id, String name, String description, Difficulty difficulty, Date finalDate) {
+	public Task(Long id, String name, String description, Difficulty difficulty) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		setDifficulty(difficulty);
-		this.finalDate = finalDate;
 	}
 
 	public Long getId() {
@@ -66,12 +67,12 @@ public class Task implements Serializable {
 		this.difficulty = difficulty.getCode();
 	}
 
-	public Date getFinalDate() {
-		return finalDate;
+	public Long getHabit() {
+		return habit;
 	}
 
-	public void setFinalDate(Date finalDate) {
-		this.finalDate = finalDate;
+	public void setHabit(Long habit) {
+		this.habit = habit;
 	}
 	
 }

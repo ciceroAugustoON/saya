@@ -1,14 +1,18 @@
 package com.backend.saya.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "tb_user")
@@ -22,6 +26,11 @@ public class User implements Serializable {
 	private String email;
 	private String username;
 	private String password;
+	@OneToOne
+	private Objectives objectives;
+	@OneToMany
+	private List<Task> dailyTasks = new ArrayList<Task>();
+	private Date taskDefinedIn;
 	
 	public User() {
 		
@@ -63,6 +72,34 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Objectives getObjectives() {
+		return objectives;
+	}
+
+	public void setObjectives(Objectives objectives) {
+		this.objectives = objectives;
+	}
+
+	public List<Task> getDailyTasks() {
+		return dailyTasks;
+	}
+
+	public void addDailyTask(Task task) {
+		dailyTasks.add(task);
+	}
+	
+	public void removeDailyTask(Task task) {
+		dailyTasks.remove(task);
+	}
+
+	public Date getTaskDefinedIn() {
+		return taskDefinedIn;
+	}
+
+	public void setTaskDefinedIn(Date taskDefinedIn) {
+		this.taskDefinedIn = taskDefinedIn;
 	}
 
 	@Override
