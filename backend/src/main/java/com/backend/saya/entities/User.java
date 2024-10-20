@@ -22,8 +22,6 @@ public class User implements Serializable {
 	private String email;
 	private String username;
 	private String password;
-	@Transient
-	private String tokenAccess;
 	
 	public User() {
 		
@@ -65,14 +63,6 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getTokenAccess() {
-		return tokenAccess;
-	}
-
-	public void setTokenAccess(String tokenAccess) {
-		this.tokenAccess = tokenAccess;
 	}
 
 	@Override
