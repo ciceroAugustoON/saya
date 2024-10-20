@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.User;
 import com.backend.saya.exceptions.ConflictException;
 import com.backend.saya.exceptions.NotFoundException;
@@ -13,17 +14,20 @@ import com.backend.saya.repositories.UserRepository;
 public class LoginService {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private LoginSecurity loginSecurity;
 	
-	public String login(String username, String password) {
-		var user = new User(null, username, LoginSecurity.encode(password));
+	public TokenAccess login(String username, String password) {
+		var user = new User(null, username, loginSecurity.encode(password));
 		if (userRepository.exists(Example.of(user))) {
-			return LoginSecurity.encode("teste");
+			user = userRepository.findOne(Example.of(user)).get();
+			return loginSecurity.getTokenAccess(user.getId());
 		} else {
 			throw new NotFoundException("User not found");
 		}
 	}
 	
-	public String register(String email, String username, String password) {
+	public TokenAccess register(String email, String username, String password) {
 		var user = new User();
 		user.setEmail(email);
 		if (userRepository.exists(Example.of(user))) {
@@ -33,10 +37,10 @@ public class LoginService {
 			throw new ConflictException("Username already registered");
 		}
 		user.setUsername(username);
-		user.setPassword(LoginSecurity.encode(password));
-		user = userRepository.save(user);
+		user.setPassword(loginSecurity.encode(password));
+		user = userRepository.saveAndFlush(user);
 		if (user != null) {
-			return LoginSecurity.encode("teste");
+			return loginSecurity.getTokenAccess(user.getId());
 		} else {
 			throw new RuntimeException("Error in user register");
 		}

@@ -1,12 +1,17 @@
 package com.backend.saya.entities;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-/* Future implements */
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "tb_token")
 public class TokenAccess implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -16,11 +21,27 @@ public class TokenAccess implements Serializable {
 	private Long userId;
 	private String token;
 	private Date expireTime;
+	
+	public TokenAccess() {
+		
+	}
 
-	public TokenAccess(String part1, String part2) {
-		this.token = part1 + part2;
-		expireTime = new Date();
-		expireTime.setMonth(expireTime.getMonth() + 1);
+	public TokenAccess(Long userId, String token) {
+		this.userId = userId;
+		this.token = token;
+		if (token != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.MONTH, 1);
+			expireTime = cal.getTime();
+		}
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getToken() {
@@ -37,5 +58,17 @@ public class TokenAccess implements Serializable {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
+	}
+	
+	public boolean isValid() {
+		return (new Date().getTime() <= expireTime.getTime());
 	}
 }
