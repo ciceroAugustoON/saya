@@ -1,7 +1,6 @@
 package com.backend.saya.entities;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 import com.backend.saya.entities.enumeration.Difficulty;
 
@@ -22,8 +21,8 @@ public class Task implements Serializable {
 	private String name;
 	private String description;
 	private Integer difficulty;
-	@ManyToOne(targetEntity = Habit.class)
-	private Long habit;
+	@ManyToOne
+	private Habit habit;
 	
 	public Task() {
 	}
@@ -67,11 +66,11 @@ public class Task implements Serializable {
 		this.difficulty = difficulty.getCode();
 	}
 
-	public Long getHabit() {
+	public Habit getHabit() {
 		return habit;
 	}
 
-	public void setHabit(Long habit) {
+	public void setHabit(Habit habit) {
 		this.habit = habit;
 	}
 	

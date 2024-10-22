@@ -14,7 +14,7 @@ public class TaskGenerator {
 	public static void generate(User user, TaskRepository taskRepository) {
 		for (Habit habit : user.getObjectives().getHabits()) {
 			Task task = new Task();
-			task.setHabit(habit.getId());
+			task.setHabit(habit);
 			List<Task> tasks = taskRepository.findAll(Example.of(task));
 			user.addDailyTask(tasks.getFirst());
 		}

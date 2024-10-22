@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.backend.saya.entities.Objectives;
 import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.User;
 import com.backend.saya.exceptions.ConflictException;
@@ -27,7 +28,7 @@ public class LoginService {
 		}
 	}
 	
-	public TokenAccess register(String email, String username, String password) {
+	public TokenAccess register(String email, String username, String password, Objectives objectives) {
 		var user = new User();
 		user.setEmail(email);
 		if (userRepository.exists(Example.of(user))) {

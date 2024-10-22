@@ -2,8 +2,6 @@ package com.backend.saya.controllers;
 
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.GetMapping;
