@@ -30,7 +30,7 @@ public class User implements Serializable {
 	private Objectives objectives;
 	@OneToMany
 	private List<Task> dailyTasks = new ArrayList<Task>();
-	private Date taskDefinedIn;
+	private Date dailyTasksDate;
 	
 	public User() {
 		
@@ -94,12 +94,12 @@ public class User implements Serializable {
 		dailyTasks.remove(task);
 	}
 
-	public Date getTaskDefinedIn() {
-		return taskDefinedIn;
+	public Date getDailyTasksDate() {
+		return dailyTasksDate;
 	}
 
-	public void setTaskDefinedIn(Date taskDefinedIn) {
-		this.taskDefinedIn = taskDefinedIn;
+	public void setDailyTasksDate(Date dailyTasksDate) {
+		this.dailyTasksDate = dailyTasksDate;
 	}
 
 	@Override
@@ -121,6 +121,6 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [email=" + email + ", username=" + username + ", password=" + password + "]";
+		return "User [email=" + email + ", username=" + username + "]";
 	}
 }

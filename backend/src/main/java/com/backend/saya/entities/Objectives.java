@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,6 +23,8 @@ public class Objectives implements Serializable{
 	private Integer metaReduction;
 	@OneToMany
 	private List<Habit> habits = new ArrayList<Habit>();
+	@OneToOne
+	private Relatory relatory;
 	
 	public Objectives() {
 		
@@ -64,7 +67,19 @@ public class Objectives implements Serializable{
 		habits.add(habit);
 	}
 	
+	public void addAllHabits(Habit...habits) {
+		this.habits.addAll(List.of(habits));
+	}
+	
 	public void removeDailyTask(Habit habit) {
 		habits.remove(habit);
+	}
+
+	public Relatory getRelatory() {
+		return relatory;
+	}
+
+	public void setRelatory(Relatory relatory) {
+		this.relatory = relatory;
 	}
 }

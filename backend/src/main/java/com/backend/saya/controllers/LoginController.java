@@ -23,7 +23,7 @@ public class LoginController {
 		return loginService.login(user.getUsername(), user.getPassword());
 	}
 	@PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-	public TokenAccess register(@RequestBody User user, Objectives objectives) {
-		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword(), objectives);
+	public TokenAccess register(@RequestBody User user) {
+		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword());
 	}
 }
