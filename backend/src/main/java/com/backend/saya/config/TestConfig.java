@@ -1,12 +1,17 @@
 package com.backend.saya.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import com.backend.saya.entities.Week;
-import com.backend.saya.entities.enumeration.WeekDay;
+import com.backend.saya.entities.Habit;
+import com.backend.saya.entities.Objectives;
+import com.backend.saya.entities.Task;
+import com.backend.saya.entities.TokenAccess;
+import com.backend.saya.entities.enumeration.Difficulty;
 import com.backend.saya.repositories.HabitRepository;
 import com.backend.saya.repositories.TaskRepository;
 import com.backend.saya.services.LoginService;
@@ -23,7 +28,7 @@ public class TestConfig implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		/*Task task01 = new Task(null, "Beba um copo de água", "Ingira pelo menos 250ml de água", Difficulty.EASY);
+		Task task01 = new Task(null, "Beba um copo de água", "Ingira pelo menos 250ml de água", Difficulty.EASY);
 		Task task02 = new Task(null, "Faça uma caminhada de 10 minutos", "Caminhe por 10 minutos ao ar livre ou em um espaço fechado", Difficulty.EASY);
 		Task task03 = new Task(null, "Leia 10 páginas de um livro", "Escolha um livro de sua preferência e leia pelo menos 10 páginas", Difficulty.MEDIUM);
 
@@ -46,16 +51,12 @@ public class TestConfig implements CommandLineRunner{
 		Task task09 = new Task(null, "Pratique a meditação da atenção plena", "Durante o dia, reserve 3 minutos para observar seus pensamentos e sensações sem julgá-los", Difficulty.MEDIUM);
 		task09.setHabit(habit2);
 		taskRepository.saveAll(List.of(task01, task02, task03, task04, task05, task06, task07, task08, task09));
-		
-		Objectives objectives = new Objectives(10, 2);
-		objectives.addHabit(habit);
-		loginService.register("a@gmail.com", "Ana", "asdf");*/
-		
-		Week week = new Week();
-		week.setEasyTasksPerDay(WeekDay.ONE, 3);
-		week.setMediumTasksPerDay(WeekDay.FOUR, 3);
-		week.setHardTasksPerDay(WeekDay.SEVEN, 1);
-		System.out.println(week.getValuePoints());
+		loginService.register("a@gmail.com", "Ana", "asdf");
+		/*Objectives objectives = new Objectives(10, 2);
+		TokenAccess tokenAccess = loginService.register("a@gmail.com", "Ana", "asdf");
+		loginService.registerObjectives(tokenAccess.getToken(), objectives);
+		Habit[] habits = {habit, habit2};
+		loginService.registerHabits(tokenAccess.getToken(), habits);*/
 	}
 	
 }

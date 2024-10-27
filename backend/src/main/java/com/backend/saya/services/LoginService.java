@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.backend.saya.entities.Habit;
+import com.backend.saya.entities.Objectives;
 import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.User;
 import com.backend.saya.exceptions.ConflictException;
 import com.backend.saya.exceptions.NotFoundException;
+import com.backend.saya.repositories.ObjectivesRepository;
+import com.backend.saya.repositories.TokenAccessRepository;
 import com.backend.saya.repositories.UserRepository;
 
 @Service
@@ -15,7 +19,11 @@ public class LoginService {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private TokenAccessRepository tokenAccessRepository;
+	@Autowired
 	private LoginSecurity loginSecurity;
+	@Autowired
+	private ObjectivesRepository objectivesRepository;
 	
 	public TokenAccess login(String username, String password) {
 		var user = new User(null, username, loginSecurity.encode(password));
@@ -44,5 +52,28 @@ public class LoginService {
 		} else {
 			throw new RuntimeException("Error in user register");
 		}
+	}
+
+	public void registerObjectives(String hashcode, Objectives objectives) {
+		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
+		User user = userRepository.getReferenceById(tokenAccess.getUserId());
+		if (user.getObjectives() != null) {
+			throw new ConflictException("This user already has objectives defined");
+		}
+		objectivesRepository.saveAndFlush(objectives);
+		user.setObjectives(objectives);
+		userRepository.saveAndFlush(user);
+	}
+
+	public void registerHabits(String hashcode, Habit[] habits) {
+		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
+		User user = userRepository.getReferenceById(tokenAccess.getUserId());
+		if (user.getObjectives() == null) {
+			throw new RuntimeException("User doesn't have objectives");
+		}
+		if (!user.getObjectives().getHabits().isEmpty()) {
+			throw new ConflictException("User already has habits defined");
+		}
+		user.getObjectives().addAllHabits(habits);
 	}
 }
