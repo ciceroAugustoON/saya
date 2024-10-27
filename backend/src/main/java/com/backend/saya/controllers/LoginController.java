@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.saya.entities.Objectives;
 import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.User;
 import com.backend.saya.services.LoginService;

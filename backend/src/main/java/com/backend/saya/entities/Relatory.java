@@ -17,6 +17,7 @@ public class Relatory implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Integer lastWeekPoints;
+	// allDailyTasksDone to be implemented
 	private Integer easyTasks;
 	private Integer mediumTasks;
 	private Integer hardTasks;

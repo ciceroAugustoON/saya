@@ -31,6 +31,8 @@ public class User implements Serializable {
 	@OneToMany
 	private List<Task> dailyTasks = new ArrayList<Task>();
 	private Date dailyTasksDate;
+	@OneToOne
+	private Week week;
 	
 	public User() {
 		
@@ -100,6 +102,14 @@ public class User implements Serializable {
 
 	public void setDailyTasksDate(Date dailyTasksDate) {
 		this.dailyTasksDate = dailyTasksDate;
+	}
+
+	public Week getWeek() {
+		return week;
+	}
+
+	public void setWeek(Week week) {
+		this.week = week;
 	}
 
 	@Override
