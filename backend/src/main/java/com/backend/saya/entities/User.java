@@ -95,6 +95,10 @@ public class User implements Serializable {
 	public void removeDailyTask(Task task) {
 		dailyTasks.remove(task);
 	}
+	
+	public void cleanTasks() {
+		dailyTasks.removeAll(dailyTasks);
+	}
 
 	public Date getDailyTasksDate() {
 		return dailyTasksDate;

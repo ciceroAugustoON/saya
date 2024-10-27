@@ -8,9 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.backend.saya.entities.Habit;
-import com.backend.saya.entities.Objectives;
 import com.backend.saya.entities.Task;
-import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.enumeration.Difficulty;
 import com.backend.saya.repositories.HabitRepository;
 import com.backend.saya.repositories.TaskRepository;
@@ -28,10 +26,15 @@ public class TestConfig implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		Habit geral = new Habit(null, "Geral");
+		habitRepository.saveAndFlush(geral);
 		Task task01 = new Task(null, "Beba um copo de água", "Ingira pelo menos 250ml de água", Difficulty.EASY);
+		task01.setHabit(geral);
 		Task task02 = new Task(null, "Faça uma caminhada de 10 minutos", "Caminhe por 10 minutos ao ar livre ou em um espaço fechado", Difficulty.EASY);
+		task02.setHabit(geral);
 		Task task03 = new Task(null, "Leia 10 páginas de um livro", "Escolha um livro de sua preferência e leia pelo menos 10 páginas", Difficulty.MEDIUM);
-
+		task03.setHabit(geral);
+		
 		Habit habit = new Habit(null, "Ciclismo");
 		Habit habit2 = new Habit(null, "Meditação");
 		habitRepository.saveAllAndFlush(List.of(habit, habit2));

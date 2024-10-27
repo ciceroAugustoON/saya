@@ -9,22 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.saya.entities.Task;
-import com.backend.saya.repositories.TaskRepository;
-import com.backend.saya.repositories.TokenAccessRepository;
-import com.backend.saya.repositories.UserRepository;
+import com.backend.saya.services.SystemService;
 
 @RestController
 @RequestMapping("/{hashcode}")
 public class SystemController {
 	@Autowired
-	private TaskRepository taskRepository;
-	@Autowired
-	private TokenAccessRepository tokenAccessRepository;
-	@Autowired
-	private UserRepository userRepository;
+	private SystemService systemService;
 	
 	@GetMapping("/tasks")
-	public List<Task> findAll(@PathVariable(name = "hashcode") String hash) {
-		return null;
+	public List<Task> getUserTasks(@PathVariable(name = "hashcode") String hashcode) {
+		return systemService.getUserTasks(hashcode);
 	}
 }

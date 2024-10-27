@@ -3,6 +3,8 @@ package com.backend.saya.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.backend.saya.entities.enumeration.WeekDay;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,10 +20,10 @@ public class Relatory implements Serializable {
 	private Long id;
 	private Integer lastWeekPoints;
 	// allDailyTasksDone to be implemented
-	private Integer easyTasks;
-	private Integer mediumTasks;
-	private Integer hardTasks;
-	private Integer weekDay;
+	private Integer easyTasks = 0;
+	private Integer mediumTasks = 0;
+	private Integer hardTasks = 0;
+	private Integer weekDay = 0;
 	
 	public Relatory() {
 		
@@ -81,8 +83,12 @@ public class Relatory implements Serializable {
 		return weekDay;
 	}
 
-	public void setWeekDay(Integer weekDay) {
-		this.weekDay = weekDay;
+	public void setWeekDay(WeekDay weekDay) {
+		this.weekDay = weekDay.getDayValue();
+	}
+	
+	public Integer getTotalTasks() {
+		return easyTasks + mediumTasks + hardTasks;
 	}
 
 	@Override
