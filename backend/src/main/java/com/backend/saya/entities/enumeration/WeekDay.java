@@ -18,4 +18,14 @@ public enum WeekDay {
 	public int getDayValue() {
 		return value;
 	}
+	
+	public static WeekDay getWeekDay(int value) {
+		WeekDay weekDays[] = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN};
+		for(WeekDay w : weekDays) {
+			if (w.getDayValue() == value) {
+				return w;
+			}
+		}
+		return null;
+	}
 }

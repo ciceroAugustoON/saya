@@ -2,6 +2,7 @@ package com.backend.saya.entities;
 
 import java.io.Serializable;
 
+import com.backend.saya.entities.enumeration.Difficulty;
 import com.backend.saya.entities.enumeration.WeekDay;
 import com.backend.saya.util.MathUtils;
 
@@ -67,7 +68,7 @@ public class Week implements Serializable{
 	}
 	
 	public int getValuePoints() {
-		return MathUtils.sumIntegerArray(easyTasksPerDay) * 2 + MathUtils.sumIntegerArray(mediumTasksPerDay) * 5 + MathUtils.sumIntegerArray(hardTasksPerDay) * 10;
+		return MathUtils.sumIntegerArray(easyTasksPerDay) * Difficulty.EASY.getValue() + MathUtils.sumIntegerArray(mediumTasksPerDay) * Difficulty.MEDIUM.getValue() + MathUtils.sumIntegerArray(hardTasksPerDay) * Difficulty.HARD.getValue();
 	}
 	
 }

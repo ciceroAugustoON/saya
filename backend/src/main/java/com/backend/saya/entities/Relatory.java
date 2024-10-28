@@ -3,6 +3,7 @@ package com.backend.saya.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.backend.saya.entities.enumeration.Difficulty;
 import com.backend.saya.entities.enumeration.WeekDay;
 
 import jakarta.persistence.Entity;
@@ -112,5 +113,19 @@ public class Relatory implements Serializable {
 	public String toString() {
 		return "Relatory [id=" + id + ", lastWeekPoints=" + lastWeekPoints + ", easyTasks=" + easyTasks
 				+ ", mediumTasks=" + mediumTasks + ", hardTasks=" + hardTasks + ", weekDay=" + weekDay + "]";
+	}
+
+	public void addTask(Task task) {
+		switch(task.getDifficulty()) {
+			case EASY:
+				easyTasks++;
+				break;
+			case MEDIUM:
+				mediumTasks++;
+				break;
+			case HARD:
+				hardTasks++;
+				break;
+		}				
 	}
 }
