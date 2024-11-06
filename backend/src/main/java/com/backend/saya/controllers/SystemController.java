@@ -3,6 +3,7 @@ package com.backend.saya.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.saya.entities.Task;
 import com.backend.saya.services.SystemService;
 
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/{hashcode}")
 public class SystemController {
