@@ -22,7 +22,7 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
-	@GetMapping(value = "/login", consumes = "application/json")
+	@PostMapping(value = "/login", consumes = "application/json")
 	public TokenAccess login(@RequestBody User user) {
 		return loginService.login(user.getUsername(), user.getPassword());
 	}
