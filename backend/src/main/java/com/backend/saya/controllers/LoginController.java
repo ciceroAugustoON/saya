@@ -2,12 +2,10 @@ package com.backend.saya.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.saya.entities.Habit;
@@ -23,9 +21,9 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
-	@GetMapping(value = "/login", produces = "application/json")
-	public TokenAccess login(@RequestParam("username") String username, @RequestParam("password") String password) {
-		return loginService.login(username, password);
+	@PostMapping(value = "/login", consumes = "application/json")
+	public TokenAccess login(@RequestBody User user) {
+		return loginService.login(user.getUsername(), user.getPassword());
 	}
 	@PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
 	public TokenAccess register(@RequestBody User user) {
