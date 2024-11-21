@@ -14,7 +14,7 @@ import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.User;
 import com.backend.saya.services.LoginService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/access")
 public class LoginController {

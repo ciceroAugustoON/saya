@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.saya.entities.Task;
 import com.backend.saya.services.SystemService;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/{hashcode}")
 public class SystemController {

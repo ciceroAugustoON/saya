@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.saya.entities.Habit;
 import com.backend.saya.repositories.HabitRepository;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/habits")
 public class HabitsController {
