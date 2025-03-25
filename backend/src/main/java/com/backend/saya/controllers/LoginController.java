@@ -30,12 +30,12 @@ public class LoginController {
 		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword());
 	}
 	@PostMapping("/{hashcode}/objectives")
-	public void registerObjectives(@PathVariable String hashcode, @RequestBody Objectives objectives) {
-		loginService.registerObjectives(hashcode, objectives);
+	public User registerObjectives(@PathVariable String hashcode, @RequestBody Objectives objectives) {
+		return loginService.registerObjectives(hashcode, objectives);
 	}
 	@PostMapping("/{hashcode}/habits")
-	public void registerHabits(@PathVariable String hashcode, @RequestBody Habit[] habits) {
-		loginService.registerHabits(hashcode, habits);
+	public User registerHabits(@PathVariable String hashcode, @RequestBody Habit[] habits) {
+		return loginService.registerHabits(hashcode, habits);
 	}
 	
 }

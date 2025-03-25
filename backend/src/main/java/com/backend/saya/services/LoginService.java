@@ -54,7 +54,7 @@ public class LoginService {
 		}
 	}
 
-	public void registerObjectives(String hashcode, Objectives objectives) {
+	public User registerObjectives(String hashcode, Objectives objectives) {
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() != null) {
@@ -62,10 +62,11 @@ public class LoginService {
 		}
 		objectivesRepository.saveAndFlush(objectives);
 		user.setObjectives(objectives);
-		userRepository.saveAndFlush(user);
+		return userRepository.saveAndFlush(user);
+		
 	}
 
-	public void registerHabits(String hashcode, Habit[] habits) {
+	public User registerHabits(String hashcode, Habit[] habits) {
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() == null) {
@@ -75,5 +76,7 @@ public class LoginService {
 			throw new ConflictException("User already has habits defined");
 		}
 		user.getObjectives().addAllHabits(habits);
+		objectivesRepository.saveAndFlush(user.getObjectives());
+		return userRepository.saveAndFlush(user);
 	}
 }
