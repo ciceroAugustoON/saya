@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/house"
+        android:title="Início"
+        android:visible="true" />
+    <item
+        android:id="@+id/explore"
+        android:icon="@drawable/globe"
+        android:title="Explorar"
+        android:visible="true" />
+    <item
+        android:id="@+id/statistic"
+        android:icon="@drawable/chart_line"
+        android:title="Relatório"
+        android:visible="true" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/gear"
+        android:title="Configuração"
+        android:visible="true" />
+</menu>
