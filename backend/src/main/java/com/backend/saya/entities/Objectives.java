@@ -19,12 +19,10 @@ public class Objectives implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Integer dailySpendedHours;
-	private Integer metaReduction;
+	private Integer dailySpendedHours, metaReduction;
 	@OneToMany
-	private List<Habit> habits = new ArrayList<Habit>();
-	@OneToOne
-	private Relatory relatory;
+	private List<Habit> habitsHad, desiredHabits = new ArrayList<Habit>();
+
 	
 	public Objectives() {
 		
@@ -59,27 +57,36 @@ public class Objectives implements Serializable{
 		this.metaReduction = metaReduction;
 	}
 	
-	public List<Habit> getHabits() {
-		return habits;
+	public List<Habit> getHabitsHad() {
+		return habitsHad;
 	}
 
-	public void addHabit(Habit habit) {
-		habits.add(habit);
+	public void addHabitHad(Habit habit) {
+		habitsHad.add(habit);
 	}
 	
-	public void addAllHabits(Habit...habits) {
-		this.habits.addAll(List.of(habits));
+	public void addAllHabitsHad(Habit...habits) {
+		this.habitsHad.addAll(List.of(habits));
 	}
 	
-	public void removeDailyTask(Habit habit) {
-		habits.remove(habit);
+	public void removeHabitHad(Habit habit) {
+		habitsHad.remove(habit);
 	}
 
-	public Relatory getRelatory() {
-		return relatory;
+	public List<Habit> getDesiredHabits() {
+		return desiredHabits;
 	}
 
-	public void setRelatory(Relatory relatory) {
-		this.relatory = relatory;
+	public void addDesiredHabit(Habit habit) {
+		desiredHabits.add(habit);
 	}
+
+	public void addAllDesiredHabits(Habit...habits) {
+		this.desiredHabits.addAll(List.of(habits));
+	}
+
+	public void removeDesiredHabit(Habit habit) {
+		desiredHabits.remove(habit);
+	}
+
 }

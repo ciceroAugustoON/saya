@@ -28,6 +28,8 @@ public class User implements Serializable {
 	private String password;
 	@OneToOne
 	private Objectives objectives;
+	@OneToOne
+	private Relatory relatory;
 	@OneToMany
 	private List<Task> dailyTasks = new ArrayList<Task>();
 	private Date dailyTasksDate;
@@ -82,6 +84,14 @@ public class User implements Serializable {
 
 	public void setObjectives(Objectives objectives) {
 		this.objectives = objectives;
+	}
+
+	public Relatory getRelatory() {
+		return relatory;
+	}
+
+	public void setRelatory(Relatory relatory) {
+		this.relatory = relatory;
 	}
 
 	public List<Task> getDailyTasks() {

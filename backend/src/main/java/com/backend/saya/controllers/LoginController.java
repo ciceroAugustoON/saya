@@ -1,12 +1,7 @@
 package com.backend.saya.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.backend.saya.entities.Habit;
 import com.backend.saya.entities.Objectives;
@@ -29,13 +24,13 @@ public class LoginController {
 	public TokenAccess register(@RequestBody User user) {
 		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword());
 	}
-	@PostMapping("/{hashcode}/objectives")
-	public User registerObjectives(@PathVariable String hashcode, @RequestBody Objectives objectives) {
-		return loginService.registerObjectives(hashcode, objectives);
+	@PostMapping("/register/objectives")
+	public User registerObjectives(@RequestHeader String token, @RequestBody Objectives objectives) {
+		return loginService.registerObjectives(token, objectives);
 	}
-	@PostMapping("/{hashcode}/habits")
-	public User registerHabits(@PathVariable String hashcode, @RequestBody Habit[] habits) {
-		return loginService.registerHabits(hashcode, habits);
+	@PostMapping("/register/habits")
+	public User registerHabits(@RequestHeader String token, @RequestBody Habit[] habitsHad, @RequestBody Habit[] desiredHabits) {
+		return loginService.registerHabits(token, habitsHad, desiredHabits);
 	}
 	
 }

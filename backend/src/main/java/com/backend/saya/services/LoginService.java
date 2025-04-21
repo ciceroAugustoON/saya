@@ -47,15 +47,15 @@ public class LoginService {
 		user.setUsername(username);
 		user.setPassword(loginSecurity.encode(password));
 		user = userRepository.saveAndFlush(user);
-		if (user != null) {
+		if (user.getId() != null) {
 			return loginSecurity.getTokenAccess(user.getId());
 		} else {
 			throw new RuntimeException("Error in user register");
 		}
 	}
 
-	public User registerObjectives(String hashcode, Objectives objectives) {
-		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
+	public User registerObjectives(String token, Objectives objectives) {
+		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() != null) {
 			throw new ConflictException("This user already has objectives defined");
@@ -66,16 +66,17 @@ public class LoginService {
 		
 	}
 
-	public User registerHabits(String hashcode, Habit[] habits) {
-		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
+	public User registerHabits(String token, Habit[] habitsHad, Habit[] desiredHabits) {
+		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() == null) {
 			throw new RuntimeException("User doesn't have objectives");
 		}
-		if (!user.getObjectives().getHabits().isEmpty()) {
+		if (!user.getObjectives().getHabitsHad().isEmpty() || !user.getObjectives().getDesiredHabits().isEmpty()) {
 			throw new ConflictException("User already has habits defined");
 		}
-		user.getObjectives().addAllHabits(habits);
+		user.getObjectives().addAllHabitsHad(habitsHad);
+		user.getObjectives().addAllDesiredHabits(desiredHabits);
 		objectivesRepository.saveAndFlush(user.getObjectives());
 		return userRepository.saveAndFlush(user);
 	}
