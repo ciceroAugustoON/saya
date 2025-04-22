@@ -12,4 +12,5 @@ import com.backend.saya.entities.Task;
 public interface TaskRepository extends JpaRepository<Task, Long>{
 
 	public List<Task> findByHabit(Habit habit);
+
 }

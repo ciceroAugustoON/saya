@@ -89,4 +89,14 @@ public class Objectives implements Serializable{
 		desiredHabits.remove(habit);
 	}
 
+	public List<Habit> getHabits() {
+		var habits = new ArrayList<Habit>();
+		if (getHabitsHad() != null) {
+			habits.addAll(getHabitsHad());
+		}
+		if (getDesiredHabits() != null) {
+			habits.addAll(getDesiredHabits());
+		}
+		return habits;
+	}
 }

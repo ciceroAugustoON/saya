@@ -25,7 +25,7 @@ public class TaskGenerator {
 	public static void generate(User user, TaskRepository taskRepository, RelatoryRepository relatoryRepository,
 			WeekRepository weekRepository) {
 		TaskGenerator.relatoryRepository = relatoryRepository;
-		Relatory relatory = user.getObjectives().getRelatory();
+		Relatory relatory = user.getRelatory();
 		user.setDailyTasksDate(new Date());
 		if (relatory == null) {
 			relatory = new Relatory();
@@ -49,7 +49,7 @@ public class TaskGenerator {
 	}
 
 	private static void generateDailyTask(User user, TaskRepository taskRepository) {
-		int day = user.getObjectives().getRelatory().getWeekDay();
+		int day = user.getRelatory().getWeekDay();
 		if (user.getDailyTasksDate().before(new Date()) && user.getDailyTasksDate().getDay() < new Date().getDay()) {
 			List<Task> tasks = getRelationTasks(user, taskRepository);
 			List<Task> tasksProcessing = new ArrayList<>();
@@ -65,7 +65,7 @@ public class TaskGenerator {
 
 	private static void generateWeek(User user, WeekRepository weekRepository) {
 		Week week = new Week();
-		Integer userPoints = user.getObjectives().getRelatory().getLastWeekPoints();
+		Integer userPoints = user.getRelatory().getLastWeekPoints();
 		Integer points = (userPoints == null) ? getFirstWeekPoints(user.getDailyTasks().size()) : userPoints;
 		for (int i = 0; i < 7 && points > 0; i++) {
 			WeekDay day = WeekDay.getWeekDay(i);
@@ -92,7 +92,7 @@ public class TaskGenerator {
 		List<Task> tasks = getRelationTasks(user, taskRepository);
 		relatory.setWeekDay(WeekDay.getWeekDay(relatory.getWeekDay() + 1));
 		relatoryRepository.save(relatory);
-		user.getObjectives().setRelatory(relatory);
+		user.setRelatory(relatory);
 		switch (relatory.getTotalTasks()) {
 		case 2: {
 			user.getDailyTasks().addAll(getLimitedTasks(tasks, 3));
@@ -140,7 +140,7 @@ public class TaskGenerator {
 		for (Habit h : user.getObjectives().getHabits()) {
 			tasks.addAll(taskRepository.findByHabit(h));
 		}
-		tasks.addAll(taskRepository.findByHabit(new Habit(1L, "Geral")));
+		// tasks.addAll(taskRepository.findByHabit(new Habit(1L, "Geral")));
 		Collections.shuffle(tasks);
 		return tasks;
 	}

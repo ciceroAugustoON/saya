@@ -2,6 +2,7 @@ package com.backend.saya.config;
 
 import java.util.List;
 
+import com.backend.saya.entities.enumeration.Segmentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,7 @@ public class TestConfig implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		Habit geral = new Habit(null, "Geral");
+		Habit geral = new Habit(null, "Geral", Segmentation.HEALTH_CARE);
 		habitRepository.saveAndFlush(geral);
 		Task task01 = new Task(null, "Beba um copo de água", "Ingira pelo menos 250ml de água", Difficulty.EASY);
 		task01.setHabit(geral);
@@ -35,8 +36,8 @@ public class TestConfig implements CommandLineRunner{
 		Task task03 = new Task(null, "Leia 10 páginas de um livro", "Escolha um livro de sua preferência e leia pelo menos 10 páginas", Difficulty.MEDIUM);
 		task03.setHabit(geral);
 		
-		Habit habit = new Habit(null, "Ciclismo");
-		Habit habit2 = new Habit(null, "Meditação");
+		Habit habit = new Habit(null, "Ciclismo", Segmentation.PHYSICAL_ACTIVITY);
+		Habit habit2 = new Habit(null, "Meditação", Segmentation.MEDITATION);
 		habitRepository.saveAllAndFlush(List.of(habit, habit2));
 		
 		Task task04 = new Task(null, "Ande de bicicleta por 10 minutos", "De uma volta no seu bairro ou local de preferência", Difficulty.MEDIUM);

@@ -60,7 +60,7 @@ public class SystemService {
 		if (msg != null) throw new NotFoundException(msg);
 		Task task = taskRepository.getReferenceById(taskId);
 		user.removeDailyTask(task);
-		Relatory r = user.getObjectives().getRelatory();
+		Relatory r = user.getRelatory();
 		r.addTask(task);
 		relatoryRepository.saveAndFlush(r);
 		userRepository.saveAndFlush(user);
@@ -76,7 +76,7 @@ public class SystemService {
 		if (user.getObjectives() == null) {
 			return "The user has no defined objectives!";
 		}
-		if (user.getObjectives().getHabits() == null || user.getObjectives().getHabits().isEmpty()) {
+		if (user.getObjectives().getHabitsHad() == null || user.getObjectives().getHabitsHad().isEmpty() && user.getObjectives().getDesiredHabits() == null || user.getObjectives().getDesiredHabits().isEmpty()) {
 			return "The user has no defined habits";
 		}
 		return null;
