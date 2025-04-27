@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.backend.saya.entities.Relatory;
@@ -21,7 +20,7 @@ import com.backend.saya.repositories.WeekRepository;
 import com.backend.saya.util.TaskGenerator;
 
 @Service
-public class SystemService {
+public class SayaService {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -54,14 +53,18 @@ public class SystemService {
 		return user.getDailyTasks();
 	}
 
-	public List<Task> finishUserTask(String hashcode, Long taskId) {
-		User user = getUser(hashcode);
+	public List<Task> finishUserTask(String token, Long taskId) {
+		User user = getUser(token);
 		String msg = isUserDefined(user);
 		if (msg != null) throw new NotFoundException(msg);
 		Task task = taskRepository.getReferenceById(taskId);
-		user.removeDailyTask(task);
 		Relatory r = user.getRelatory();
-		r.addTask(task);
+		if (r.getTasksQuantity() == user.getDailyTasks().size()) {
+			r.increaseOffensive();
+		}
+		user.removeDailyTask(task);
+		r.addPoints(task.getDifficulty().getValue());
+
 		relatoryRepository.saveAndFlush(r);
 		userRepository.saveAndFlush(user);
 		return user.getDailyTasks();

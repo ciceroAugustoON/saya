@@ -19,25 +19,19 @@ public class Relatory implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Integer lastWeekPoints;
 	// allDailyTasksDone to be implemented
-	private Integer easyTasks = 0;
-	private Integer mediumTasks = 0;
-	private Integer hardTasks = 0;
-	private Integer weekDay = 0;
-	
+	private Integer points = 0;
+	private Integer offensive = 0;
+	private Integer tasksQuantity;
+	private boolean firstTaskOfDay;
+
 	public Relatory() {
-		
 	}
 
-	public Relatory(Long id, Integer lastWeekPoints, Integer easyTasks, Integer mediumTasks, Integer hardTasks,
-			Integer weekDay) {
+	public Relatory(Long id, Integer points, Integer offensive) {
 		this.id = id;
-		this.lastWeekPoints = lastWeekPoints;
-		this.easyTasks = easyTasks;
-		this.mediumTasks = mediumTasks;
-		this.hardTasks = hardTasks;
-		this.weekDay = weekDay;
+		this.points = points;
+		this.offensive = offensive;
 	}
 
 	public Long getId() {
@@ -48,48 +42,40 @@ public class Relatory implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getLastWeekPoints() {
-		return lastWeekPoints;
+	public Integer getPoints() {
+		return points;
 	}
 
-	public void setLastWeekPoints(Integer lastWeekPoints) {
-		this.lastWeekPoints = lastWeekPoints;
+	public void addPoints(Integer points) {
+		points += points;
 	}
 
-	public Integer getEasyTasks() {
-		return easyTasks;
+	public Integer getOffensive() {
+		return offensive;
 	}
 
-	public void setEasyTasks(Integer easyTasks) {
-		this.easyTasks = easyTasks;
+	public void increaseOffensive() {
+		this.offensive++;
 	}
 
-	public Integer getMediumTasks() {
-		return mediumTasks;
+	public void loseOffencive() {
+		this.offensive = 0;
 	}
 
-	public void setMediumTasks(Integer mediumTasks) {
-		this.mediumTasks = mediumTasks;
+	public boolean isFirstTaskOfDay() {
+		return firstTaskOfDay;
 	}
 
-	public Integer getHardTasks() {
-		return hardTasks;
+	public void setFirstTaskOfDay(boolean firstTaskOfDay) {
+		this.firstTaskOfDay = firstTaskOfDay;
 	}
 
-	public void setHardTasks(Integer hardTasks) {
-		this.hardTasks = hardTasks;
+	public Integer getTasksQuantity() {
+		return tasksQuantity;
 	}
 
-	public Integer getWeekDay() {
-		return weekDay;
-	}
-
-	public void setWeekDay(WeekDay weekDay) {
-		this.weekDay = weekDay.getDayValue();
-	}
-	
-	public Integer getTotalTasks() {
-		return easyTasks + mediumTasks + hardTasks;
+	public void setTasksQuantity(Integer tasksQuantity) {
+		this.tasksQuantity = tasksQuantity;
 	}
 
 	@Override
@@ -111,21 +97,10 @@ public class Relatory implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Relatory [id=" + id + ", lastWeekPoints=" + lastWeekPoints + ", easyTasks=" + easyTasks
-				+ ", mediumTasks=" + mediumTasks + ", hardTasks=" + hardTasks + ", weekDay=" + weekDay + "]";
+		return "Relatory{" +
+				"offensive=" + offensive +
+				", points=" + points +
+				'}';
 	}
 
-	public void addTask(Task task) {
-		switch(task.getDifficulty()) {
-			case EASY:
-				easyTasks++;
-				break;
-			case MEDIUM:
-				mediumTasks++;
-				break;
-			case HARD:
-				hardTasks++;
-				break;
-		}				
-	}
 }
