@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.saya.entities.enumeration.Archetype;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class User implements Serializable {
 	private String email;
 	private String username;
 	private String password;
+	private Archetype archetype;
 	@OneToOne
 	private Objectives objectives;
 	@OneToOne
@@ -35,16 +37,18 @@ public class User implements Serializable {
 	private Date dailyTasksDate;
 	@OneToOne
 	private Week week;
+
 	
 	public User() {
 		
 	}
 
-	public User(Long id, String username, String password) {
+	public User(Long id, String username, String password, Archetype archetype) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
-	}
+        this.archetype = archetype;
+    }
 
 	public Long getId() {
 		return id;
@@ -76,6 +80,14 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Archetype getArchetype() {
+		return archetype;
+	}
+
+	public void setArchetype(Archetype archetype) {
+		this.archetype = archetype;
 	}
 
 	public Objectives getObjectives() {

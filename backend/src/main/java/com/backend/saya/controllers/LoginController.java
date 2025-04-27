@@ -1,12 +1,9 @@
 package com.backend.saya.controllers;
 
+import com.backend.saya.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.backend.saya.entities.Habit;
-import com.backend.saya.entities.Objectives;
-import com.backend.saya.entities.TokenAccess;
-import com.backend.saya.entities.User;
 import com.backend.saya.services.LoginService;
 
 @CrossOrigin("*")
@@ -29,8 +26,12 @@ public class LoginController {
 		return loginService.registerObjectives(token, objectives);
 	}
 	@PostMapping("/register/habits")
-	public User registerHabits(@RequestHeader String token, @RequestBody Habit[] habitsHad, @RequestBody Habit[] desiredHabits) {
-		return loginService.registerHabits(token, habitsHad, desiredHabits);
+	public User addHabits(@RequestHeader String token, @RequestBody Habits habits) {
+		return loginService.addHabits(token, habits);
+	}
+	@PutMapping("/register/habits")
+	public User removeHabits(@RequestHeader String token, @RequestBody Habits habits) {
+		return loginService.removeHabits(token, habits);
 	}
 	
 }

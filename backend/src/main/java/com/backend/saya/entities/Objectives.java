@@ -68,6 +68,10 @@ public class Objectives implements Serializable{
 	public void addAllHabitsHad(Habit...habits) {
 		this.habitsHad.addAll(List.of(habits));
 	}
+
+	public void addAllHabitsHad(List<Habit> habits) {
+		this.habitsHad.addAll(habits);
+	}
 	
 	public void removeHabitHad(Habit habit) {
 		habitsHad.remove(habit);
@@ -83,6 +87,10 @@ public class Objectives implements Serializable{
 
 	public void addAllDesiredHabits(Habit...habits) {
 		this.desiredHabits.addAll(List.of(habits));
+	}
+
+	public void addAllDesiredHabits(List<Habit> habits) {
+		this.desiredHabits.addAll(habits);
 	}
 
 	public void removeDesiredHabit(Habit habit) {
