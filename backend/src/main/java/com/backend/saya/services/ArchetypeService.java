@@ -25,6 +25,7 @@ public class ArchetypeService {
         int maxIndex = MathUtils.findMaxValueIndex(counterSegmentation);
         if (maxIndex == -1) {
             user.setArchetype(Archetype.DEFAULT);
+            return;
         }
         user.setArchetype(getArchetypeBySegmentation(segmentations[maxIndex]));
     }

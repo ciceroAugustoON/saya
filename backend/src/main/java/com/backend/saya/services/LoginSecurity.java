@@ -3,6 +3,7 @@ package com.backend.saya.services;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -48,5 +49,9 @@ public class LoginSecurity {
 	
 	public boolean validateToken(TokenAccess tokenAccess) {
 		return (tokenAccess.isValid())? true : false;
+	}
+
+	public boolean matches(String password, String passwordEncrypted) {
+		return Objects.equals(encode(password), passwordEncrypted);
 	}
 }

@@ -5,6 +5,7 @@ import com.backend.saya.entities.enumeration.Archetype;
 import com.backend.saya.entities.enumeration.Segmentation;
 import com.backend.saya.repositories.HabitRepository;
 import com.backend.saya.util.MathUtils;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.backend.saya.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LoginService {
@@ -34,13 +36,22 @@ public class LoginService {
 	private HabitRepository habitRepository;
 	
 	public TokenAccess login(String username, String password) {
-		var user = new User(null, username, loginSecurity.encode(password), Archetype.DEFAULT);
-		if (userRepository.exists(Example.of(user))) {
-			user = userRepository.findOne(Example.of(user)).get();
-			return loginSecurity.getTokenAccess(user.getId());
-		} else {
-			throw new NotFoundException("User not found");
+		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+			throw new IllegalArgumentException("Username and password cannot be blank");
 		}
+
+		Optional<User> userOpt = userRepository.findByUsername(username);
+		if (userOpt.isEmpty()) {
+			throw new NotFoundException("Invalid credentials");
+		}
+
+		User user = userOpt.get();
+
+		if (!loginSecurity.matches(password, user.getPassword())) {
+			throw new NotFoundException("Invalid credentials");
+		}
+
+		return loginSecurity.getTokenAccess(user.getId());
 	}
 	
 	public TokenAccess register(String email, String username, String password) {
@@ -68,15 +79,22 @@ public class LoginService {
 		if (user.getObjectives() != null) {
 			throw new ConflictException("This user already has objectives defined");
 		}
-		objectives.getHabitsHad().forEach((h) -> {
-			h.setSegmentation(habitRepository.findById(h.getId()).orElse(new Habit()).getSegmentation());
-		});
+		for (Habit h : objectives.getHabitsHad()) {
+			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
+			objectives.removeHabitHad(h);
+			objectives.addHabitHad(h1);
+		}
+		for (Habit h : objectives.getDesiredHabits()) {
+			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
+			objectives.removeDesiredHabit(h);
+			objectives.addDesiredHabit(h1);
+		}
+
 		objectivesRepository.saveAndFlush(objectives);
 		user.setObjectives(objectives);
 		archetypeService.defineArchetype(user);
 		return userRepository.saveAndFlush(user);
 	}
-
 
 
 	public User addHabits(String token, Habits habits) {
@@ -95,7 +113,7 @@ public class LoginService {
 	private List<Habit> findHabitsDB(Habit[] habits) {
 		List<Habit> habitsDB = new ArrayList<>();
 		for (Habit h : habits) {
-			habitsDB.add(habitRepository.getReferenceById(h.getId()));
+			habitsDB.add(habitRepository.findByName(h.getName()).get());
 		}
 		return habitsDB;
 	}
@@ -106,8 +124,8 @@ public class LoginService {
 		if (user.getObjectives() == null) {
 			throw new RuntimeException("User doesn't have objectives");
 		}
-		user.getObjectives().getHabitsHad().removeAll(List.of(habits.getHabitsHad()));
-		user.getObjectives().getDesiredHabits().removeAll(List.of(habits.getDesiredHabits()));
+		user.getObjectives().getHabitsHad().removeAll(findHabitsDB(habits.getHabitsHad()));
+		user.getObjectives().getDesiredHabits().removeAll(findHabitsDB(habits.getDesiredHabits()));
 		objectivesRepository.saveAndFlush(user.getObjectives());
 		archetypeService.defineArchetype(user);
 		return userRepository.saveAndFlush(user);
