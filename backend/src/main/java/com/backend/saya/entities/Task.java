@@ -21,17 +21,19 @@ public class Task implements Serializable {
 	private String name;
 	private String description;
 	private Integer difficulty;
+	private Integer timeSecs;
 	@ManyToOne
 	private Habit habit;
 	
 	public Task() {
 	}
 	
-	public Task(Long id, String name, String description, Difficulty difficulty) {
+	public Task(Long id, String name, String description, Difficulty difficulty, Integer timeSecs) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		setDifficulty(difficulty);
+        this.timeSecs = timeSecs;
+        setDifficulty(difficulty);
 	}
 
 	public Long getId() {
@@ -73,5 +75,12 @@ public class Task implements Serializable {
 	public void setHabit(Habit habit) {
 		this.habit = habit;
 	}
-	
+
+	public Integer getTimeSecs() {
+		return timeSecs;
+	}
+
+	public void setTimeSecs(Integer timeSecs) {
+		this.timeSecs = timeSecs;
+	}
 }

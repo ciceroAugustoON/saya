@@ -103,8 +103,13 @@ public class LoginService {
 		if (user.getObjectives() == null) {
 			throw new RuntimeException("User doesn't have objectives");
 		}
-		user.getObjectives().addAllHabitsHad(findHabitsDB(habits.getHabitsHad()));
-		user.getObjectives().addAllDesiredHabits(findHabitsDB(habits.getDesiredHabits()));
+		if (habits.getHabitsHad() != null) {
+			user.getObjectives().addAllHabitsHad(findHabitsDB(habits.getHabitsHad()));
+		}
+		if (habits.getDesiredHabits() != null) {
+			user.getObjectives().addAllDesiredHabits(findHabitsDB(habits.getDesiredHabits()));
+		}
+
 		objectivesRepository.saveAndFlush(user.getObjectives());
 		archetypeService.defineArchetype(user);
 		return userRepository.saveAndFlush(user);
@@ -124,8 +129,12 @@ public class LoginService {
 		if (user.getObjectives() == null) {
 			throw new RuntimeException("User doesn't have objectives");
 		}
-		user.getObjectives().getHabitsHad().removeAll(findHabitsDB(habits.getHabitsHad()));
-		user.getObjectives().getDesiredHabits().removeAll(findHabitsDB(habits.getDesiredHabits()));
+		if (habits.getHabitsHad() != null) {
+			user.getObjectives().getHabitsHad().removeAll(findHabitsDB(habits.getHabitsHad()));
+		}
+		if (habits.getDesiredHabits() != null) {
+			user.getObjectives().getDesiredHabits().removeAll(findHabitsDB(habits.getDesiredHabits()));
+		}
 		objectivesRepository.saveAndFlush(user.getObjectives());
 		archetypeService.defineArchetype(user);
 		return userRepository.saveAndFlush(user);

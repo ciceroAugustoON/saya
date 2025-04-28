@@ -1,9 +1,7 @@
 package com.backend.saya.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -22,8 +20,7 @@ import com.backend.saya.repositories.WeekRepository;
 public class TaskGenerator {
 	private static RelatoryRepository relatoryRepository;
 
-	public static void generate(User user, TaskRepository taskRepository, RelatoryRepository relatoryRepository,
-			WeekRepository weekRepository) {
+	public static void generate(User user, TaskRepository taskRepository, RelatoryRepository relatoryRepository) {
 		TaskGenerator.relatoryRepository = relatoryRepository;
 		Relatory relatory = user.getRelatory();
 		user.setDailyTasksDate(new Date());
@@ -35,13 +32,75 @@ public class TaskGenerator {
 			user.setRelatory(relatory);
 			return;
 		}
+		generateDailyTask(user, taskRepository, relatory);
 		relatoryRepository.saveAndFlush(relatory);
-		generateDailyTask(user, taskRepository);
-		return;
 	}
 
-	private static void generateDailyTask(User user, TaskRepository taskRepository) {
+	private static void generateDailyTask(User user, TaskRepository taskRepository, Relatory relatory) {
+		Integer objective = relatory.getTimeSave() * (user.getObjectives().getMetaReduction() * 3600 / 8);
 
+		List<Task> tasksHaded = getRelationTasks(user.getObjectives().getHabitsHad(), taskRepository);
+		List<Task> tasksDesired = getRelationTasks(user.getObjectives().getDesiredHabits(), taskRepository);
+		List<Task> tasks = new ArrayList<>();
+		tasks.addAll(tasksHaded);
+		tasks.addAll(tasksDesired);
+		List<Task> easyTasks = getTasksByDifficulty(Difficulty.EASY, tasks);
+		int easyTaksMedia = mediaTasksTempo(easyTasks);
+		List<Task> mediumTasks = getTasksByDifficulty(Difficulty.MEDIUM, tasks);
+		int mediumTaksMedia = mediaTasksTempo(mediumTasks);
+		List<Task> hardTasks = getTasksByDifficulty(Difficulty.HARD, tasks);
+		int hardTaksMedia = mediaTasksTempo(hardTasks);
+
+		List<int[]> combinations = findCombinations(easyTaksMedia, mediumTaksMedia, hardTaksMedia, objective, 10);
+		Collections.shuffle(combinations);
+		int[] sortedCombination = combinations.getFirst();
+		// for a while the differnce between habitsHad and habitsDesired will not be considered
+		Collections.shuffle(tasks);
+		user.getDailyTasks().addAll(tasks.stream()
+				.filter((t) -> t.getDifficulty().equals(Difficulty.EASY))
+				.toList().subList(0, sortedCombination[0]));
+		user.getDailyTasks().addAll(tasks.stream()
+				.filter((t) -> t.getDifficulty().equals(Difficulty.MEDIUM))
+				.toList().subList(0, sortedCombination[1]));
+		user.getDailyTasks().addAll(tasks.stream()
+				.filter((t) -> t.getDifficulty().equals(Difficulty.HARD))
+				.toList().subList(0, sortedCombination[2]));
+	}
+
+	private static List<int[]> findCombinations(int easyMedia, int mediumMedia, int hardMedia, int objective, int margin) {
+		List<int[]> validCombinations = new ArrayList<>();
+
+		int maxF = objective / easyMedia + 1;
+		int maxM = objective / mediumMedia + 1;
+		int maxD = objective / hardMedia + 1;
+
+		for (int f = 0; f <= maxF; f++) {
+			for (int m = 0; m <= maxM; m++) {
+				for (int d = 0; d <= maxD; d++) {
+					int totalTime = f * easyMedia + m * mediumMedia + d * hardMedia;
+
+					if (Math.abs(totalTime - objective) <= margin) {
+						validCombinations.add(new int[]{f, m, d, totalTime});
+					}
+				}
+			}
+		}
+
+		return validCombinations;
+	}
+
+	private static Integer mediaTasksTempo(List<Task> tasks) {
+		if (tasks == null || tasks.isEmpty()) {
+			return 0;
+		}
+
+		return (int) tasks.stream()
+				.filter(Objects::nonNull) // Filtra tasks nulas
+				.map(Task::getTimeSecs)      // Mapeia para Integer (segundos)
+				.filter(Objects::nonNull) // Filtra tempos nulos
+				.mapToInt(Integer::intValue) // Converte para int
+				.average()                // Calcula a média
+				.orElse(0.0);
 	}
 
 	private static void generateFirstDay(User user, TaskRepository taskRepository) {

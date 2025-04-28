@@ -23,7 +23,10 @@ public class Relatory implements Serializable {
 	private Integer points = 0;
 	private Integer offensive = 0;
 	private Integer tasksQuantity;
-	private boolean firstTaskOfDay;
+	private Integer timeSave = 0;
+	private Integer totalTimeSave = 0;
+	private Integer habitsHadDone = 0;
+	private Integer desiredHabitsDone = 0;
 
 	public Relatory() {
 	}
@@ -62,20 +65,45 @@ public class Relatory implements Serializable {
 		this.offensive = 0;
 	}
 
-	public boolean isFirstTaskOfDay() {
-		return firstTaskOfDay;
-	}
-
-	public void setFirstTaskOfDay(boolean firstTaskOfDay) {
-		this.firstTaskOfDay = firstTaskOfDay;
-	}
-
 	public Integer getTasksQuantity() {
 		return tasksQuantity;
 	}
 
 	public void setTasksQuantity(Integer tasksQuantity) {
 		this.tasksQuantity = tasksQuantity;
+	}
+
+	public Integer getTimeSave() {
+		return timeSave;
+	}
+
+	public void addTimeSaved(Integer time) {
+		this.timeSave += time;
+		addTotalTimeSave(time);
+	}
+
+	public Integer getHabitsHadDone() {
+		return habitsHadDone;
+	}
+
+	public void addHabitsHadDone() {
+		this.habitsHadDone += 1;
+	}
+
+	public Integer getDesiredHabitsDone() {
+		return desiredHabitsDone;
+	}
+
+	public void addDesiredHabitsDone() {
+		this.desiredHabitsDone += 1;
+	}
+
+	public Integer getTotalTimeSave() {
+		return totalTimeSave;
+	}
+
+	private void addTotalTimeSave(Integer timeSave) {
+		this.totalTimeSave += totalTimeSave;
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class SayaService {
 		if (msg != null) throw new NotFoundException(msg);
 		if (user.getDailyTasksDate() == null) {
 			user.cleanTasks();
-			TaskGenerator.generate(user, taskRepository, relatoryRepository, weekRepository);
+			TaskGenerator.generate(user, taskRepository, relatoryRepository);
 			userRepository.saveAndFlush(user);
 		}
 		Calendar today = Calendar.getInstance();
@@ -47,13 +47,13 @@ public class SayaService {
 		tomorrow.setTime(user.getDailyTasksDate());
 		if (today.get(Calendar.DAY_OF_MONTH) > tomorrow.get(Calendar.DAY_OF_MONTH) && today.after(tomorrow)) {
 			user.cleanTasks();
-			TaskGenerator.generate(user, taskRepository, relatoryRepository, weekRepository);
+			TaskGenerator.generate(user, taskRepository, relatoryRepository);
 			userRepository.saveAndFlush(user);
 		}
 		return user.getDailyTasks();
 	}
 
-	public List<Task> finishUserTask(String token, Long taskId) {
+	public List<Task> finishUserTask(String token, Long taskId, Integer timeSecs) {
 		User user = getUser(token);
 		String msg = isUserDefined(user);
 		if (msg != null) throw new NotFoundException(msg);
@@ -64,6 +64,16 @@ public class SayaService {
 		}
 		user.removeDailyTask(task);
 		r.addPoints(task.getDifficulty().getValue());
+		if (timeSecs > 0) {
+			r.addTimeSaved(timeSecs);
+		} else {
+			r.addTimeSaved(task.getTimeSecs());
+		}
+		if (user.getObjectives().getHabitsHad().contains(task.getHabit())) {
+			r.addHabitsHadDone();
+		} else if(user.getObjectives().getDesiredHabits().contains(task.getHabit())) {
+			r.addDesiredHabitsDone();
+		}
 
 		relatoryRepository.saveAndFlush(r);
 		userRepository.saveAndFlush(user);

@@ -21,7 +21,7 @@ public class SayaController {
 	}
 	
 	@PutMapping("/tasks/{id}")
-	public List<Task> finishTask(@RequestHeader String token, @PathVariable Long id) {
-		return sayaService.finishUserTask(token, id);
+	public List<Task> finishTask(@RequestHeader String token, @PathVariable Long id, @RequestParam Integer time) {
+		return sayaService.finishUserTask(token, id, time);
 	}
 }
