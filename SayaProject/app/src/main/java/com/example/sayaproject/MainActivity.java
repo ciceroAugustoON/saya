@@ -11,7 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sayaproject.model.Task;
-import com.example.sayaproject.repository.TaskRename;
+import com.example.sayaproject.service.TaskService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnApplyWindowInsetsListener(null);
         //
         bottomNavigationView.findViewById(R.id.home).setOnClickListener((l) -> {
-            TaskRename taskService = getTaskService();
+            TaskService taskService = getTaskService();
             Call<List<Task>> callTasks = taskService.listTasks();
 
             callTasks.enqueue(new Callback<List<Task>>() {
@@ -61,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected TaskRename getTaskService() {
+    protected TaskService getTaskService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://67eae66234bcedd95f64ef06.mockapi.io/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit.create(TaskRename.class);
+        return retrofit.create(TaskService.class);
     }
 
     protected String[] tasksToArray(List<Task> tasks) {

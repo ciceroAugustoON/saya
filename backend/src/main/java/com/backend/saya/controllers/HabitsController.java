@@ -19,7 +19,7 @@ public class HabitsController {
 	private HabitRepository habitRepository;
 	
 	@GetMapping("")
-	public List<Habit> findAll() {
+	public List<Habit> findAll() {	
 		return habitRepository.findAll();
 	}
 }
