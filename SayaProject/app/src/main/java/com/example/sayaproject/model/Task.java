@@ -1,28 +1,30 @@
 package com.example.sayaproject.model;
 
 public class Task {
-    private Integer id;
+    private Long id;
     private String name;
-    private Integer[] duration;
+    private Integer duration;
     private Integer difficulty;
-    private String category;
+    private String description;
+
 
     public Task() {
     }
 
-    public Task(Integer id, String name, Integer[] duration, Integer difficulty, String category) {
+    public Task(Long id, String name, Integer duration, Integer difficulty, String category) {
         this.id = id;
         this.name = name;
         this.duration = duration;
         this.difficulty = difficulty;
-        this.category = category;
+        this.description = category;
     }
 
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -34,11 +36,11 @@ public class Task {
         this.name = name;
     }
 
-    public Integer[] getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer[] duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -50,11 +52,11 @@ public class Task {
         this.difficulty = difficulty;
     }
 
-    public String getCategory() {
-        return category;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
