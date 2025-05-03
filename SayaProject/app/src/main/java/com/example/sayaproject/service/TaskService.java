@@ -7,12 +7,12 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 
 public interface TaskService {
 
-    //mockAPI example
-    @GET("/api/test/tasks")
-    Call<List<Task>> listTasks();
+    @GET("/user/tasks")
+    Call<List<Task>> listTasks(@Header("token") String token);
 
 
 }

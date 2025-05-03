@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import com.backend.saya.entities.Task;
 import com.backend.saya.services.SayaService;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/user")
 public class SayaController {

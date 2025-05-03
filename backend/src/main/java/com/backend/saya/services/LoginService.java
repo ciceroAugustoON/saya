@@ -15,9 +15,11 @@ import com.backend.saya.exceptions.NotFoundException;
 import com.backend.saya.repositories.ObjectivesRepository;
 import com.backend.saya.repositories.TokenAccessRepository;
 import com.backend.saya.repositories.UserRepository;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -71,6 +73,13 @@ public class LoginService {
 		} else {
 			throw new RuntimeException("Error in user register");
 		}
+	}
+
+	public boolean changePassword(@RequestHeader String username, String password) {
+		User user = userRepository.findByUsername(username).orElse(null);
+		if (user == null) throw new NotFoundException("User not found");
+		user.setPassword(password);
+		return Objects.equals(userRepository.save(user).getPassword(), password);
 	}
 
 	public User registerObjectives(String token, Objectives objectives) {

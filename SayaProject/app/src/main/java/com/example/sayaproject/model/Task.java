@@ -1,22 +1,27 @@
 package com.example.sayaproject.model;
 
+import com.example.sayaproject.model.enumeration.Difficulty;
+
 public class Task {
     private Long id;
     private String name;
-    private Integer duration;
-    private Integer difficulty;
+    private Integer timeSecs;
+    private Difficulty difficulty;
     private String description;
+
+    private Habit habit;
 
 
     public Task() {
     }
 
-    public Task(Long id, String name, Integer duration, Integer difficulty, String category) {
+    public Task(Long id, String name, Integer duration, Difficulty difficulty, String description, Habit habit) {
         this.id = id;
         this.name = name;
-        this.duration = duration;
+        this.timeSecs = duration;
         this.difficulty = difficulty;
-        this.description = category;
+        this.description = description;
+        this.habit = habit;
     }
 
 
@@ -36,20 +41,20 @@ public class Task {
         this.name = name;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public Integer getTimeSecs() {
+        return timeSecs;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setTimeSecs(Integer timeSecs) {
+        this.timeSecs = timeSecs;
     }
 
     public Integer getDifficulty() {
-        return difficulty;
+        return difficulty.getCode();
     }
 
     public void setDifficulty(Integer difficulty) {
-        this.difficulty = difficulty;
+        this.difficulty = Difficulty.valueOf(difficulty);
     }
 
     public String getDescription() {
@@ -58,5 +63,13 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Habit getHabit() {
+        return habit;
+    }
+
+    public void setHabit(Habit habit) {
+        this.habit = habit;
     }
 }

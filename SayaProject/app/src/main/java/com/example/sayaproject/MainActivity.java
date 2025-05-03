@@ -1,6 +1,7 @@
 package com.example.sayaproject;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -10,10 +11,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.sayaproject.layout.TaskAdapter;
 import com.example.sayaproject.model.Task;
+import com.example.sayaproject.model.Token;
+import com.example.sayaproject.model.User;
+import com.example.sayaproject.model.UserLogin;
 import com.example.sayaproject.service.TaskService;
+import com.example.sayaproject.service.UserService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -24,6 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+    private final static String baseURL = "http://192.168.0.31:8080/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +43,42 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        UserService userService = getUserService();
+        Call<Token> callToken = userService.login(new UserLogin("joao", "1234"));
+        final Token[] token = new Token[1];
+        callToken.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (response.isSuccessful()) {
+                    // Atualize a UI aqui com os dados recebidos
+                    token[0] = response.body();
+                } else {
+                    Log.e("API", "Erro: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                Log.e("API", "Falha na requisição", t);
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         // Removing bottom padding added by the sdk
         bottomNavigationView.setOnApplyWindowInsetsListener(null);
         //
         bottomNavigationView.findViewById(R.id.home).setOnClickListener((l) -> {
+
             TaskService taskService = getTaskService();
-            Call<List<Task>> callTasks = taskService.listTasks();
+            Call<List<Task>> callTasks = taskService.listTasks(token[0].getToken());
 
             callTasks.enqueue(new Callback<List<Task>>() {
                 @Override
                 public void onResponse(Call<List<Task>> call, Response<List<Task>> response) {
                     List<Task> tasks = response.body();
                     ListView listView = findViewById(R.id.tasks);
-                    String[] tasksString = tasksToArray(tasks);
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, tasksString);
-                    listView.setAdapter(arrayAdapter);
+                    TaskAdapter taskAdapter = new TaskAdapter(MainActivity.this, tasks);
+                    listView.setAdapter(taskAdapter);
                 }
                 @Override
                 public void onFailure(Call<List<Task>> call, Throwable throwable) {
@@ -63,10 +91,18 @@ public class MainActivity extends AppCompatActivity {
 
     protected TaskService getTaskService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://67eae66234bcedd95f64ef06.mockapi.io/")
+                .baseUrl(baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit.create(TaskService.class);
+    }
+
+    protected UserService getUserService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(UserService.class);
     }
 
     protected String[] tasksToArray(List<Task> tasks) {

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.backend.saya.services.LoginService;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/access")
 public class LoginController {
@@ -32,6 +31,11 @@ public class LoginController {
 	@PutMapping("/register/habits")
 	public User removeHabits(@RequestHeader String token, @RequestBody Habits habits) {
 		return loginService.removeHabits(token, habits);
+	}
+
+	@PutMapping("/change-password")
+	public boolean changePassword(@RequestHeader String username, String password) {
+		return loginService.changePassword(username, password);
 	}
 	
 }
