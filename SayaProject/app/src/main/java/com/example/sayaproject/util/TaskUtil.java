@@ -1,14 +1,12 @@
 package com.example.sayaproject.util;
 
-import android.media.Image;
-
 import com.example.sayaproject.R;
-import com.example.sayaproject.model.Task;
+import com.example.sayaproject.model.Habit;
 
 public class TaskUtil {
 
-    public static int habitToIcon(Task task) {
-        String habitName = task.getHabit().getName();
+    public static int habitToIcon(Habit habit) {
+        String habitName = habit.getName();
         switch (habitName.toLowerCase()) {
             case "caminhada":
                 return R.drawable.person_walking;

@@ -1,14 +1,14 @@
 package com.example.sayaproject.model;
 
-import com.example.sayaproject.model.enumeration.Difficulty;
+import androidx.room.Entity;
 
+import com.example.sayaproject.model.enumeration.Difficulty;
 public class Task {
     private Long id;
     private String name;
     private Integer timeSecs;
     private Difficulty difficulty;
     private String description;
-
     private Habit habit;
 
 
@@ -23,7 +23,6 @@ public class Task {
         this.description = description;
         this.habit = habit;
     }
-
 
     public Long getId() {
         return id;
@@ -49,12 +48,16 @@ public class Task {
         this.timeSecs = timeSecs;
     }
 
-    public Integer getDifficulty() {
-        return difficulty.getCode();
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     public void setDifficulty(Integer difficulty) {
         this.difficulty = Difficulty.valueOf(difficulty);
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
     }
 
     public String getDescription() {
@@ -69,7 +72,7 @@ public class Task {
         return habit;
     }
 
-    public void setHabit(Habit habit) {
+    public void setHabitId(Habit habit) {
         this.habit = habit;
     }
 }

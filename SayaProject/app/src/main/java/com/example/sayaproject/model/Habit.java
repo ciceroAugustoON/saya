@@ -1,5 +1,8 @@
 package com.example.sayaproject.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.example.sayaproject.model.enumeration.Segmentation;
 
 public class Habit {
@@ -17,7 +20,6 @@ public class Habit {
         this.segmentation = segmentation;
     }
 
-    //get e set
     public Long getId() {
         return id;
     }

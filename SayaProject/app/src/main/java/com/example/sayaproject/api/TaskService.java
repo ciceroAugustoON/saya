@@ -1,4 +1,4 @@
-package com.example.sayaproject.service;
+package com.example.sayaproject.api;
 
 
 import com.example.sayaproject.model.Task;
@@ -12,7 +12,7 @@ import retrofit2.http.Header;
 public interface TaskService {
 
     @GET("/user/tasks")
-    Call<List<Task>> listTasks(@Header("token") String token);
+    Call<List<Task>> getTasks(@Header("token") String token);
 
 
 }

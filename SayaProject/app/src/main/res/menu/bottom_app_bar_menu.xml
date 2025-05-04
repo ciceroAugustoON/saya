@@ -11,11 +11,13 @@
         android:visible="true" />
     <item
         android:id="@+id/explore"
+        android:enabled="false"
         android:icon="@drawable/globe"
         android:title="Explorar"
         android:visible="true" />
     <item
         android:id="@+id/statistic"
+        android:enabled="false"
         android:icon="@drawable/chart_line"
         android:title="Relatório"
         android:visible="true" />

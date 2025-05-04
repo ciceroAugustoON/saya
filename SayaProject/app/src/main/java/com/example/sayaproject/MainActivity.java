@@ -2,7 +2,6 @@ package com.example.sayaproject;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -10,17 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sayaproject.layout.TaskAdapter;
 import com.example.sayaproject.model.Task;
 import com.example.sayaproject.model.Token;
-import com.example.sayaproject.model.User;
 import com.example.sayaproject.model.UserLogin;
-import com.example.sayaproject.service.TaskService;
-import com.example.sayaproject.service.UserService;
+import com.example.sayaproject.api.UserService;
+import com.example.sayaproject.viewmodel.TaskViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -32,6 +30,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private final static String baseURL = "http://192.168.0.31:8080/";
+    private static Token token;
+    private TaskViewModel taskViewModel;
+    private TaskAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +44,16 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+
         UserService userService = getUserService();
         Call<Token> callToken = userService.login(new UserLogin("joao", "1234"));
-        final Token[] token = new Token[1];
         callToken.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if (response.isSuccessful()) {
                     // Atualize a UI aqui com os dados recebidos
-                    token[0] = response.body();
+                    token = response.body();
                 } else {
                     Log.e("API", "Erro: " + response.code());
                 }
@@ -63,38 +65,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        loadTasks();
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         // Removing bottom padding added by the sdk
         bottomNavigationView.setOnApplyWindowInsetsListener(null);
         //
         bottomNavigationView.findViewById(R.id.home).setOnClickListener((l) -> {
-
-            TaskService taskService = getTaskService();
-            Call<List<Task>> callTasks = taskService.listTasks(token[0].getToken());
-
-            callTasks.enqueue(new Callback<List<Task>>() {
-                @Override
-                public void onResponse(Call<List<Task>> call, Response<List<Task>> response) {
-                    List<Task> tasks = response.body();
-                    ListView listView = findViewById(R.id.tasks);
-                    TaskAdapter taskAdapter = new TaskAdapter(MainActivity.this, tasks);
-                    listView.setAdapter(taskAdapter);
-                }
-                @Override
-                public void onFailure(Call<List<Task>> call, Throwable throwable) {
-                    System.out.println(throwable);
-                }
-            });
+            List<Task> tasks = taskViewModel.getTasks(token);
+            adapter = new TaskAdapter(MainActivity.this, tasks);
+            ListView taskListView = findViewById(R.id.tasks);
+            taskListView.setAdapter(adapter);
         });
 
     }
 
-    protected TaskService getTaskService() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(TaskService.class);
+    private void loadTasks() {
+        List<Task> tasks = taskViewModel.getTasks(token);
+        adapter = new TaskAdapter(MainActivity.this, tasks);
+        ListView taskListView = findViewById(R.id.tasks);
+        taskListView.setAdapter(adapter);
     }
 
     protected UserService getUserService() {

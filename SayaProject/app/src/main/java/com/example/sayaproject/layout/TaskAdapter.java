@@ -1,18 +1,16 @@
 package com.example.sayaproject.layout;
 
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.example.sayaproject.R;
+import com.example.sayaproject.model.Habit;
 import com.example.sayaproject.model.Task;
 import com.example.sayaproject.util.TaskUtil;
 
@@ -31,7 +29,7 @@ public class TaskAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return tasks.size();
+        return (tasks == null)? 0 : tasks.size();
     }
 
     @Override
@@ -64,16 +62,17 @@ public class TaskAdapter extends BaseAdapter {
         }
 
         Task task = tasks.get(position);
+        Habit habit = tasks.get(position).getHabit();
         holder.name.setText(task.getName());
         holder.duration.setText("Duração: " + (task.getTimeSecs() / 60) + " min");
 
-        if (task.getDifficulty() < 3) {
+        if (task.getDifficulty().getValue() < 3) {
             holder.hard.setColorFilter(Color.parseColor("#CECECE"));
-            if (task.getDifficulty() < 2) {
+            if (task.getDifficulty().getValue() < 2) {
                 holder.medium.setColorFilter(Color.parseColor("#CECECE"));
             }
         }
-        holder.habit_icon.setImageResource(TaskUtil.habitToIcon(task));
+        holder.habit_icon.setImageResource(TaskUtil.habitToIcon(habit));
 
         return convertView;
     }
