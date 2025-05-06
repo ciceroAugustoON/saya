@@ -61,7 +61,7 @@
         android:keepScreenOn="true"
         android:visibility="visible"
         app:itemHorizontalTranslationEnabled="true"
-        app:itemIconTint="@color/material_dynamic_neutral10"
+        app:itemIconTint="@color/black"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

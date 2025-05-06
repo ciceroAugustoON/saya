@@ -6,7 +6,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.example.sayaproject.api.ApiClient;
-import com.example.sayaproject.database.TaskDao;
+import com.example.sayaproject.localStorage.TaskDao;
 import com.example.sayaproject.model.Task;
 import com.example.sayaproject.model.Token;
 import com.example.sayaproject.api.TaskService;
@@ -27,9 +27,8 @@ public class TaskRepository {
 
     public List<Task> getTasks(Token token) {
         refreshTasks(token);
-        List<Task> localTasks = taskDao.getAll();
 
-        return localTasks;
+        return taskDao.getAll();
     }
 
     private void refreshTasks(Token token) {

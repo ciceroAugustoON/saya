@@ -1,7 +1,11 @@
 package com.example.sayaproject;
 
+import android.content.ClipData;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -12,11 +16,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sayaproject.layout.TaskAdapter;
+import com.example.sayaproject.localStorage.UserDao;
 import com.example.sayaproject.model.Task;
 import com.example.sayaproject.model.Token;
 import com.example.sayaproject.model.UserLogin;
 import com.example.sayaproject.api.UserService;
 import com.example.sayaproject.viewmodel.TaskViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -30,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private final static String baseURL = "http://192.168.0.31:8080/";
-    private static Token token;
+    private UserDao userDao;
     private TaskViewModel taskViewModel;
     private TaskAdapter adapter;
 
@@ -44,26 +50,15 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        userDao = new UserDao(this.getSharedPreferences("AppPrefs", MODE_PRIVATE));
+
+        if (!userDao.isUserLoged()) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
-
-        UserService userService = getUserService();
-        Call<Token> callToken = userService.login(new UserLogin("joao", "1234"));
-        callToken.enqueue(new Callback<Token>() {
-            @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
-                if (response.isSuccessful()) {
-                    // Atualize a UI aqui com os dados recebidos
-                    token = response.body();
-                } else {
-                    Log.e("API", "Erro: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Token> call, Throwable t) {
-                Log.e("API", "Falha na requisição", t);
-            }
-        });
 
         loadTasks();
 
@@ -71,17 +66,27 @@ public class MainActivity extends AppCompatActivity {
         // Removing bottom padding added by the sdk
         bottomNavigationView.setOnApplyWindowInsetsListener(null);
         //
-        bottomNavigationView.findViewById(R.id.home).setOnClickListener((l) -> {
-            List<Task> tasks = taskViewModel.getTasks(token);
-            adapter = new TaskAdapter(MainActivity.this, tasks);
-            ListView taskListView = findViewById(R.id.tasks);
-            taskListView.setAdapter(adapter);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.home) {
+                // Atualiza a UI para a tela "Home"
+                List<Task> tasks = taskViewModel.getTasks(userDao.getToken());
+                adapter = new TaskAdapter(MainActivity.this, tasks);
+                ListView taskListView = findViewById(R.id.tasks);
+                taskListView.setAdapter(adapter);
+
+                // Marca o item como selecionado (gerenciado automaticamente pelo BottomNavigationView)
+                return true; // Retorna true para indicar que o clique foi tratado
+            }
+
+            return false; // Se não for tratado
         });
 
     }
 
     private void loadTasks() {
-        List<Task> tasks = taskViewModel.getTasks(token);
+        List<Task> tasks = taskViewModel.getTasks(userDao.getToken());
         adapter = new TaskAdapter(MainActivity.this, tasks);
         ListView taskListView = findViewById(R.id.tasks);
         taskListView.setAdapter(adapter);
