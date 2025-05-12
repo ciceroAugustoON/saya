@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.timeless.saya.R;
+import com.timeless.saya.core.MainActivity;
 import com.timeless.saya.core.util.OnFragmentRemovedListener;
 import com.timeless.saya.databinding.FragmentLoginBinding;
 import com.timeless.saya.feature.auth.data.Result;
@@ -137,13 +138,15 @@ public class LoginFragment extends Fragment {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.remove(this);
 
+        MainActivity mainActivity = (MainActivity) this.getHost();
+
         // Opcional: adicionar animação
         transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
 
         transaction.commit();
 
-        if (getParentFragment() instanceof OnFragmentRemovedListener) {
-            ((OnFragmentRemovedListener) getParentFragment()).onFragmentRemoved();
+        if (mainActivity != null) {
+            mainActivity.onFragmentRemoved();
         }
     }
 
@@ -158,8 +161,8 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        binding.getRoot().setVisibility(View.INVISIBLE);
         super.onDestroyView();
+
         binding = null;
     }
 }

@@ -19,6 +19,7 @@ import com.timeless.saya.feature.auth.presentation.LoginFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentRemovedListener {
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
 
         AppModule.setSharedPreferences(getSharedPreferences("AppPrefs", MODE_PRIVATE));
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
         // Removendo o padding de baixo adicionado pelo sdk
         bottomNavigationView.setOnApplyWindowInsetsListener(null);
         //
@@ -49,11 +50,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
         if (!LoginRepository.getInstance(new RemoteLoginDataSource(), new LocalLoginDataSource()).isLoggedIn()) {
             bottomNavigationView.setVisibility(View.INVISIBLE);
             loadLoginFragment();
-        }
+        } else {
+            // Verificar se é a primeira vez que a Activity está sendo criada
+            if (savedInstanceState == null) {
+                loadTaskFragment();
+            }
 
-        // Verificar se é a primeira vez que a Activity está sendo criada
-        if (savedInstanceState == null) {
-            loadTaskFragment();
         }
 
     }
@@ -69,8 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
     }
     @Override
     public void onFragmentRemoved() {
-        findViewById(R.id.login_container).setVisibility(View.INVISIBLE);
-        loadTaskFragment();
+        bottomNavigationView.setVisibility(View.VISIBLE);
     }
 }
 

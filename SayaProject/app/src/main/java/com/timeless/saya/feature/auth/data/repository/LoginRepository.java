@@ -12,7 +12,7 @@ import com.timeless.saya.feature.auth.domain.LoginCallback;
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
-public class LoginRepository {
+public class LoginRepository implements LoginCallback{
 
     private static volatile LoginRepository instance;
 
@@ -20,7 +20,7 @@ public class LoginRepository {
     private LocalLoginDataSource localDataSource;
     private LoggedInUser user = null;
 
-    private static Result<LoggedInUser> result;
+    private static LoginCallback fatherLoginCallback;
 
     // private constructor : singleton access
     private LoginRepository(RemoteLoginDataSource dataSource, LocalLoginDataSource localDataSource) {
@@ -55,9 +55,20 @@ public class LoginRepository {
         return user.getToken();
     }
 
-    public Result<LoggedInUser> login(String username, String password, LoginCallback loginCallback) {
-        // handle login
-        remoteDataSource.login(username, password, loginCallback);
-        return result;
+    public void login(String username, String password, LoginCallback loginCallback) {
+        fatherLoginCallback = loginCallback;
+        remoteDataSource.login(username, password, this);
+    }
+
+    @Override
+    public void onLoginComplete(Result<LoggedInUser> result) {
+        if (fatherLoginCallback == null) {
+            throw new RuntimeException("login callback is not provided");
+        }
+        if (result instanceof Result.Success) {
+            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
+        }
+
+        fatherLoginCallback.onLoginComplete(result);
     }
 }
