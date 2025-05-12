@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.sayaproject"
+    namespace = "com.timeless.saya"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.sayaproject"
+        applicationId = "com.timeless.saya"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -44,6 +44,8 @@ dependencies {
     implementation(libs.annotation)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
