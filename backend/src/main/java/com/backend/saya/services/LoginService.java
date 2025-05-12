@@ -1,5 +1,6 @@
 package com.backend.saya.services;
 
+import com.backend.saya.dto.UserResponse;
 import com.backend.saya.entities.*;
 import com.backend.saya.entities.enumeration.Archetype;
 import com.backend.saya.entities.enumeration.Segmentation;
@@ -37,7 +38,7 @@ public class LoginService {
 	@Autowired
 	private HabitRepository habitRepository;
 	
-	public TokenAccess login(String username, String password) {
+	public UserResponse login(String username, String password) {
 		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
 			throw new IllegalArgumentException("Username and password cannot be blank");
 		}
@@ -53,10 +54,11 @@ public class LoginService {
 			throw new NotFoundException("Invalid credentials");
 		}
 
-		return loginSecurity.getTokenAccess(user.getId());
+		TokenAccess token = loginSecurity.getTokenAccess(user.getId());
+		return new UserResponse(token.getUserId(), username, token.getToken());
 	}
 	
-	public TokenAccess register(String email, String username, String password) {
+	public UserResponse register(String email, String username, String password) {
 		var user = new User();
 		user.setEmail(email);
 		if (userRepository.exists(Example.of(user))) {
@@ -69,7 +71,8 @@ public class LoginService {
 		user.setPassword(loginSecurity.encode(password));
 		user = userRepository.saveAndFlush(user);
 		if (user.getId() != null) {
-			return loginSecurity.getTokenAccess(user.getId());
+			TokenAccess token = loginSecurity.getTokenAccess(user.getId());
+			return new UserResponse(token.getUserId(), username, token.getToken());
 		} else {
 			throw new RuntimeException("Error in user register");
 		}
