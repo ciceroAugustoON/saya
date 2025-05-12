@@ -1,8 +1,10 @@
 package com.backend.saya.controllers;
 
+import com.backend.saya.dto.ApiResponse;
 import com.backend.saya.dto.UserResponse;
 import com.backend.saya.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.backend.saya.services.LoginService;
@@ -14,7 +16,7 @@ public class LoginController {
 	private LoginService loginService;
 	
 	@PostMapping(value = "/login", consumes = "application/json")
-	public UserResponse login(@RequestBody User user) {
+	public ResponseEntity<ApiResponse> login(@RequestBody User user) {
 		return loginService.login(user.getUsername(), user.getPassword());
 	}
 	@PostMapping(value = "/register", consumes = "application/json", produces = "application/json")

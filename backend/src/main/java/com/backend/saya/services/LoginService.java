@@ -1,5 +1,6 @@
 package com.backend.saya.services;
 
+import com.backend.saya.dto.ApiResponse;
 import com.backend.saya.dto.UserResponse;
 import com.backend.saya.entities.*;
 import com.backend.saya.entities.enumeration.Archetype;
@@ -9,6 +10,9 @@ import com.backend.saya.util.MathUtils;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.backend.saya.exceptions.ConflictException;
@@ -38,24 +42,24 @@ public class LoginService {
 	@Autowired
 	private HabitRepository habitRepository;
 	
-	public UserResponse login(String username, String password) {
-		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-			throw new IllegalArgumentException("Username and password cannot be blank");
+	public ResponseEntity<ApiResponse> login(String identifier, String password) {
+		if (StringUtils.isBlank(identifier) || StringUtils.isBlank(password)) {
+			return ResponseEntity.ok(ApiResponse.error("Bad Request", "Username and Password are requested!"));
 		}
 
-		Optional<User> userOpt = userRepository.findByUsername(username);
+		Optional<User> userOpt = userRepository.findByUsernameOrEmail(identifier);
 		if (userOpt.isEmpty()) {
-			throw new NotFoundException("Invalid credentials");
+			return ResponseEntity.notFound().build();
 		}
 
 		User user = userOpt.get();
 
 		if (!loginSecurity.matches(password, user.getPassword())) {
-			throw new NotFoundException("Invalid credentials");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Unauthorized", "Invalid credentials"));
 		}
 
 		TokenAccess token = loginSecurity.getTokenAccess(user.getId());
-		return new UserResponse(token.getUserId(), username, token.getToken());
+		return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), identifier, token.getToken())));
 	}
 	
 	public UserResponse register(String email, String username, String password) {
@@ -79,7 +83,7 @@ public class LoginService {
 	}
 
 	public boolean changePassword(@RequestHeader String username, String password) {
-		User user = userRepository.findByUsername(username).orElse(null);
+		User user = userRepository.findByUsernameOrEmail(username).orElse(null);
 		if (user == null) throw new NotFoundException("User not found");
 		user.setPassword(password);
 		return Objects.equals(userRepository.save(user).getPassword(), password);
@@ -150,5 +154,15 @@ public class LoginService {
 		objectivesRepository.saveAndFlush(user.getObjectives());
 		archetypeService.defineArchetype(user);
 		return userRepository.saveAndFlush(user);
+	}
+
+	private class LoginError {
+		String error;
+		String message;
+
+		public LoginError(String error, String message) {
+			this.error = error;
+			this.message = message;
+		}
 	}
 }
