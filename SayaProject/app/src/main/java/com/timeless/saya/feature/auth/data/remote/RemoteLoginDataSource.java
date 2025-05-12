@@ -7,6 +7,7 @@ import com.timeless.saya.core.api.ApiClient;
 import com.timeless.saya.feature.auth.data.model.UserLogin;
 import com.timeless.saya.feature.auth.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
+import com.timeless.saya.feature.auth.domain.LoginCallback;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -44,9 +45,5 @@ public class RemoteLoginDataSource {
 
     public void logout() {
         // TODO: revoke authentication
-    }
-
-    public interface LoginCallback {
-        void onLoginComplete(Result<LoggedInUser> result);
     }
 }

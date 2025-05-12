@@ -6,6 +6,7 @@ import com.timeless.saya.feature.auth.data.local.LocalLoginDataSource;
 import com.timeless.saya.feature.auth.data.remote.RemoteLoginDataSource;
 import com.timeless.saya.feature.auth.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
+import com.timeless.saya.feature.auth.domain.LoginCallback;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -54,17 +55,9 @@ public class LoginRepository {
         return user.getToken();
     }
 
-    public Result<LoggedInUser> login(String username, String password) {
+    public Result<LoggedInUser> login(String username, String password, LoginCallback loginCallback) {
         // handle login
-        remoteDataSource.login(username, password, new RemoteLoginDataSource.LoginCallback() {
-            @Override
-            public void onLoginComplete(Result<LoggedInUser> result) {
-                LoginRepository.result = result;
-                if (result instanceof Result.Success) {
-                    setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
-                }
-            }
-        });
+        remoteDataSource.login(username, password, loginCallback);
         return result;
     }
 }

@@ -10,8 +10,9 @@ import com.timeless.saya.R;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
 import com.timeless.saya.feature.auth.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
+import com.timeless.saya.feature.auth.domain.LoginCallback;
 
-public class LoginViewModel extends ViewModel {
+public class LoginViewModel extends ViewModel implements LoginCallback {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
@@ -31,8 +32,11 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+        loginRepository.login(username, password, this);
+    }
 
+    @Override
+    public void onLoginComplete(Result<LoggedInUser> result) {
         if (result instanceof Result.Success) {
             LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
             loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
@@ -67,4 +71,6 @@ public class LoginViewModel extends ViewModel {
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
     }
+
+
 }
