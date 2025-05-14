@@ -31,10 +31,14 @@ import com.timeless.saya.feature.auth.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
 import com.timeless.saya.feature.auth.data.remote.RemoteLoginDataSource;
 
+import java.util.NoSuchElementException;
+
 public class LoginFragment extends Fragment {
 
     private LoginViewModel loginViewModel;
     private FragmentLoginBinding binding;
+
+    private boolean isRegister = false;
 
     public LoginFragment() {
     }
@@ -57,8 +61,10 @@ public class LoginFragment extends Fragment {
 
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
+        final EditText registerEditText = binding.registerField;
         final Button loginButton = binding.login;
         final ProgressBar loadingProgressBar = binding.loading;
+
 
         loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(), new Observer<LoginFormState>() {
             @Override
@@ -73,6 +79,14 @@ public class LoginFragment extends Fragment {
                 if (loginFormState.getPasswordError() != null) {
                     passwordEditText.setError(getString(loginFormState.getPasswordError()));
                 }
+                if (isRegister) {
+                    if (loginFormState.getEmailError() != null) {
+                        usernameEditText.setError(getString(loginFormState.getEmailError()));
+                    }
+                    if (loginFormState.getUsernameError() != null) {
+                        registerEditText.setError(getString(loginFormState.getUsernameError()));
+                    }
+                }
             }
         });
 
@@ -84,7 +98,16 @@ public class LoginFragment extends Fragment {
                 }
                 loadingProgressBar.setVisibility(View.GONE);
                 if (loginResult.getError() != null) {
+                    if (loginResult.getError() == R.string.not_found) {
+                        binding.textView.setText(R.string.register_title);
+                        binding.registerField.setVisibility(View.VISIBLE);
+                        isRegister = true;
+                        return;
+                    }
                     showLoginFailed(loginResult.getError());
+                } else if (loginResult.getMessage() != null) {
+                    showLoginFailed(loginResult.getMessage());
+                    return;
                 }
                 if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
@@ -127,8 +150,14 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                if (binding.textView.getText().equals(getResources().getText(R.string.login_title))) {
+                    loginViewModel.login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());
+                } else {
+                    loginViewModel.register(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString(), registerEditText.getText().toString());
+                }
+
             }
         });
     }
@@ -155,6 +184,15 @@ public class LoginFragment extends Fragment {
             Toast.makeText(
                     getContext().getApplicationContext(),
                     errorString,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void showLoginFailed(String message) {
+        if (getContext() != null && getContext().getApplicationContext() != null) {
+            Toast.makeText(
+                    getContext().getApplicationContext(),
+                    message,
                     Toast.LENGTH_LONG).show();
         }
     }

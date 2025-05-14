@@ -9,6 +9,15 @@
     android:orientation="horizontal"
     tools:context=".core.MainActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/header"
+        android:name="com.timeless.saya.core.naviagtion.HeaderFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
