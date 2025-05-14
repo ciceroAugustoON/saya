@@ -44,7 +44,7 @@ public class LoginService {
 	
 	public ResponseEntity<ApiResponse> login(String identifier, String password) {
 		if (StringUtils.isBlank(identifier) || StringUtils.isBlank(password)) {
-			return ResponseEntity.ok(ApiResponse.error("Bad Request", "Username and Password are requested!"));
+			return ResponseEntity.badRequest().body(ApiResponse.error("Bad Request", "Username and Password are requested!"));
 		}
 
 		Optional<User> userOpt = userRepository.findByUsernameOrEmail(identifier);
@@ -62,23 +62,32 @@ public class LoginService {
 		return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), identifier, token.getToken())));
 	}
 	
-	public UserResponse register(String email, String username, String password) {
-		var user = new User();
+	public ResponseEntity<ApiResponse> register(String email, String username, String password) {
+		if (StringUtils.isBlank(email) || StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+			return ResponseEntity.badRequest()
+					.body(ApiResponse.error("Bad Request", "All fields are required"));
+		}
+		if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-z]{2,}$")) {
+			return ResponseEntity.badRequest()
+					.body(ApiResponse.error("Bad Request", "Invalid email format"));
+		}
+		if (userRepository.emailAlreadyExists(email)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(ApiResponse.error("Conflict", "Email already registered"));
+		}
+		if (userRepository.usernameAlreadyExists(username)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(ApiResponse.error("Conflict", "Username already registered"));
+		}
+		var user = new User(null, username, loginSecurity.encode(password), null);
 		user.setEmail(email);
-		if (userRepository.exists(Example.of(user))) {
-			throw new ConflictException("Email already registered");
-		}
-		if (userRepository.exists(Example.of(new User(null, username, null, null)))) {
-			throw new ConflictException("Username already registered");
-		}
-		user.setUsername(username);
-		user.setPassword(loginSecurity.encode(password));
 		user = userRepository.saveAndFlush(user);
 		if (user.getId() != null) {
 			TokenAccess token = loginSecurity.getTokenAccess(user.getId());
-			return new UserResponse(token.getUserId(), username, token.getToken());
+			return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), username, token.getToken())));
 		} else {
-			throw new RuntimeException("Error in user register");
+			return ResponseEntity.internalServerError()
+					.body(ApiResponse.error("Internal Server Error", "An error occurred while processing your registration. Please try again later."));
 		}
 	}
 
@@ -154,15 +163,5 @@ public class LoginService {
 		objectivesRepository.saveAndFlush(user.getObjectives());
 		archetypeService.defineArchetype(user);
 		return userRepository.saveAndFlush(user);
-	}
-
-	private class LoginError {
-		String error;
-		String message;
-
-		public LoginError(String error, String message) {
-			this.error = error;
-			this.message = message;
-		}
 	}
 }

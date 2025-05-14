@@ -20,7 +20,7 @@ public class LoginController {
 		return loginService.login(user.getUsername(), user.getPassword());
 	}
 	@PostMapping(value = "/register", consumes = "application/json", produces = "application/json")
-	public UserResponse register(@RequestBody User user) {
+	public ResponseEntity<ApiResponse> register(@RequestBody User user) {
 		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword());
 	}
 	@PostMapping("/register/objectives")
