@@ -24,7 +24,7 @@ public class LoginController {
 		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword());
 	}
 	@PostMapping("/register/objectives")
-	public User registerObjectives(@RequestHeader String token, @RequestBody Objectives objectives) {
+	public ResponseEntity<ApiResponse> registerObjectives(@RequestHeader String token, @RequestBody Objectives objectives) {
 		return loginService.registerObjectives(token, objectives);
 	}
 	@PostMapping("/register/habits")

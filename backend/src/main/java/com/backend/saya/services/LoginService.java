@@ -98,11 +98,11 @@ public class LoginService {
 		return Objects.equals(userRepository.save(user).getPassword(), password);
 	}
 
-	public User registerObjectives(String token, Objectives objectives) {
+	public ResponseEntity<ApiResponse> registerObjectives(String token, Objectives objectives) {
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() != null) {
-			throw new ConflictException("This user already has objectives defined");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error("Conflict", "This user already has objectives defined"));
 		}
 		for (Habit h : objectives.getHabitsHad()) {
 			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
@@ -118,7 +118,8 @@ public class LoginService {
 		objectivesRepository.saveAndFlush(objectives);
 		user.setObjectives(objectives);
 		archetypeService.defineArchetype(user);
-		return userRepository.saveAndFlush(user);
+		user = userRepository.saveAndFlush(user);
+		return ResponseEntity.ok(ApiResponse.success(user.getArchetype()));
 	}
 
 
