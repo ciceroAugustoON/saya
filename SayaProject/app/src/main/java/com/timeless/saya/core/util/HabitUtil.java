@@ -1,12 +1,11 @@
-package com.timeless.saya.feature.taskmanager.domain.util;
+package com.timeless.saya.core.util;
 
 import com.timeless.saya.R;
 import com.timeless.saya.feature.taskmanager.domain.model.Task;
 
-public class TaskUtil {
+public class HabitUtil {
 
-    public static int habitToIcon(Task task) {
-        String habitName = task.getHabit();
+    public static int habitToIcon(String habitName) {
         switch (habitName.toLowerCase()) {
             case "caminhada":
                 return R.drawable.person_walking;

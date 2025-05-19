@@ -1,6 +1,6 @@
 package com.timeless.saya.feature.taskmanager.presentation;
 
-import android.content.Context;
+import android.app.Application;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,20 +13,18 @@ import android.widget.ListView;
 import com.timeless.saya.R;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
 import com.timeless.saya.feature.taskmanager.data.repository.TaskRepository;
+import com.timeless.saya.feature.taskmanager.domain.model.Task;
 
-public class TaskFragment extends Fragment {
+import java.util.List;
 
-    private TaskRepository taskRepository;
+public class TaskListFragment extends Fragment {
 
-    public TaskFragment() {
-    }
+    private final TaskRepository taskRepository;
+    private final LoginRepository loginRepository;
 
-    @SuppressWarnings("unused")
-    public static TaskFragment newInstance(int columnCount) {
-        TaskFragment fragment = new TaskFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    public TaskListFragment(LoginRepository loginRepository, Application application) {
+        this.loginRepository = loginRepository;
+        taskRepository = new TaskRepository(application);
     }
 
     @Override
@@ -38,14 +36,12 @@ public class TaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
-
+        ListView listView = view.findViewById(R.id.taskList);
         // Set the adapter
-        if (view instanceof ListView) {
-            Context context = view.getContext();
-            ListView listView = (ListView) view;
-            String token = LoginRepository.getInstance(null, null).getToken();
-            listView.setAdapter(new TaskViewAdapter(this.getContext(), taskRepository.getTasks(token)));
-        }
+        String token = loginRepository.getToken();
+        List<Task> tasks = taskRepository.getTasks(token);
+
+        listView.setAdapter(new TaskViewAdapter(listView.getContext(), tasks));
         return view;
     }
 }

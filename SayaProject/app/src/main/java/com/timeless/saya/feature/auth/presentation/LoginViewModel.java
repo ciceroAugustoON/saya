@@ -4,12 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.provider.ContactsContract;
 import android.util.Patterns;
 
 import com.timeless.saya.R;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
-import com.timeless.saya.feature.auth.data.Result;
+import com.timeless.saya.core.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
 import com.timeless.saya.feature.auth.domain.LoginCallback;
 

@@ -17,4 +17,8 @@
     <string name="login_failed">"Falha no login"</string>
     <string name="regiser_email_failed">O primeiro campo deve ser um endereço de email</string>
     <string name="not_found">"Novo usuário"</string>
+    <!-- Strings related to objectives -->
+    <string name="objectives_step_2">Selecione os Hábitos que você POSSUI:</string>
+    <string name="objectives_step_3">Selecione os Hábitos que você DESEJA:</string>
+    <string name="error_objectives">Erro ao registrar os objetivos</string>
 </resources>

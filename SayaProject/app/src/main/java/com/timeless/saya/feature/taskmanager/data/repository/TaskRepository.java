@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.tasklist.data.repository;
+package com.timeless.saya.feature.taskmanager.data.repository;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -6,10 +6,9 @@ import android.app.Application;
 import android.util.Log;
 
 import com.timeless.saya.core.api.ApiClient;
-import com.timeless.saya.feature.auth.data.model.LoggedInUser;
-import com.timeless.saya.feature.tasklist.data.local.TaskDao;
-import com.timeless.saya.feature.tasklist.domain.model.Task;
-import com.timeless.saya.feature.tasklist.data.remote.TaskService;
+import com.timeless.saya.feature.taskmanager.data.local.TaskDao;
+import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.feature.taskmanager.data.remote.TaskService;
 
 import java.util.List;
 

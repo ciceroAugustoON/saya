@@ -33,7 +33,7 @@
         android:layout_marginStart="163dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="163dp"
-        android:text="Login"
+        android:text="Acessar"
         android:textColor="@color/green"
         android:textSize="34sp"
         android:textStyle="bold"

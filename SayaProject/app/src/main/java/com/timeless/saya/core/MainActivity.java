@@ -1,5 +1,6 @@
 package com.timeless.saya.core;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentContainerView;
 
 import com.timeless.saya.R;
 import com.timeless.saya.core.util.OnFragmentRemovedListener;
@@ -17,9 +19,14 @@ import com.timeless.saya.feature.auth.data.remote.RemoteLoginDataSource;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
 import com.timeless.saya.feature.auth.presentation.LoginFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.timeless.saya.feature.objectives_manager.presentation.ObjectivesManagerActivity;
+import com.timeless.saya.feature.taskmanager.presentation.TaskListFragment;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentRemovedListener {
     BottomNavigationView bottomNavigationView;
+    FragmentContainerView headerFragmentView;
+
+    LoginRepository loginRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
 
         AppModule.setSharedPreferences(getSharedPreferences("AppPrefs", MODE_PRIVATE));
 
+        headerFragmentView = findViewById(R.id.header);
+
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         // Removendo o padding de baixo adicionado pelo sdk
         bottomNavigationView.setOnApplyWindowInsetsListener(null);
@@ -47,15 +56,15 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
             return false;
         });
 
-        if (!LoginRepository.getInstance(new RemoteLoginDataSource(), new LocalLoginDataSource()).isLoggedIn()) {
+        loginRepository = LoginRepository.getInstance(new RemoteLoginDataSource(), new LocalLoginDataSource());
+
+        if (!loginRepository.isLoggedIn()) {
+            headerFragmentView.setVisibility(View.INVISIBLE);
             bottomNavigationView.setVisibility(View.INVISIBLE);
             loadLoginFragment();
-        } else {
-            // Verificar se é a primeira vez que a Activity está sendo criada
-            if (savedInstanceState == null) {
-                loadTaskFragment();
-            }
-
+        } else if (savedInstanceState == null) {
+            if (!loginRepository.isObjectivesDefined()) {loadHabitManagerActivity();}
+            else {loadTaskFragment();}
         }
 
     }
@@ -67,11 +76,22 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
     }
 
     private void loadTaskFragment() {
-
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.taskListContainer, new TaskListFragment(loginRepository, this.getApplication()))
+                .commit();
     }
     @Override
     public void onFragmentRemoved() {
+        if (!loginRepository.isObjectivesDefined()) {
+            loadHabitManagerActivity();
+        }
+        headerFragmentView.setVisibility(View.VISIBLE);
         bottomNavigationView.setVisibility(View.VISIBLE);
+    }
+
+    private void loadHabitManagerActivity() {
+        Intent intent = new Intent(this, ObjectivesManagerActivity.class);
+        startActivity(intent);
     }
 }
 

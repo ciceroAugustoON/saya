@@ -1,8 +1,8 @@
-package com.timeless.saya.feature.tasklist.data.local;
+package com.timeless.saya.feature.taskmanager.data.local;
 
 import android.content.SharedPreferences;
 
-import com.timeless.saya.feature.tasklist.domain.model.Task;
+import com.timeless.saya.feature.taskmanager.domain.model.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

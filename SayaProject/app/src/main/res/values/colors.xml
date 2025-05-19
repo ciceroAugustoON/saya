@@ -3,4 +3,18 @@
     <color name="black">#1F2020</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#4CAF50</color>
+
+    <color name="button_enabled">@color/green</color>
+    <color name="button_unabled">#505050</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <color name="selected_color_bg">#4CAF50</color>
+    <color name="selected_color_txt">#FFFFFF</color>
+
+    <color name="normal_color_bg">#F1F1F1</color>
+    <color name="normal_color_txt">#1F2020</color>
+
+    <color name="dark_color_bg">#1F2020</color>
+    <color name="dark_color_txt">#FFFFFF</color>
 </resources>

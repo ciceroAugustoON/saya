@@ -5,13 +5,14 @@ import android.nfc.FormatException;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.timeless.saya.core.api.ApiClient;
 import com.timeless.saya.core.api.ApiResponse;
 import com.timeless.saya.feature.auth.data.model.UserLogin;
-import com.timeless.saya.feature.auth.data.Result;
+import com.timeless.saya.core.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
 import com.timeless.saya.feature.auth.data.model.UserRegister;
-import com.timeless.saya.feature.auth.data.repository.LoginRepository;
 import com.timeless.saya.feature.auth.domain.LoginCallback;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class RemoteLoginDataSource {
@@ -69,7 +71,14 @@ public class RemoteLoginDataSource {
             try {
                 Response<ApiResponse<LoggedInUser>> response = authService.register(new UserRegister(email, username, password)).execute();
                 ApiResponse<LoggedInUser> apiResponse = response.body();
-                assert apiResponse != null;
+                if (apiResponse == null) {
+                    try (ResponseBody errorBody = response.errorBody()) {
+                         apiResponse = new Gson().fromJson(
+                                 errorBody.charStream(),
+                                 new TypeToken<ApiResponse<LoggedInUser>>(){}.getType()
+                         );
+                    }
+                }
                 String message = (apiResponse.getMessage() != null) ? apiResponse.getMessage() : "";
                 if (response.code() == 400) {
                     if ("All fields are required".equals(message)) {
@@ -86,7 +95,8 @@ public class RemoteLoginDataSource {
                 } else if (response.code() == 500) {
                     mainHandler.post(() -> callback.onLoginComplete(new Result.Error(new Exception("Ocorreu um erro durante o processamento do registro. Tente novamente mais tarde."))));
                 } else if (response.code() == 200) {
-                    mainHandler.post(() -> callback.onLoginComplete(new Result.Success<>(apiResponse.getData())));
+                    LoggedInUser loggedInUser = apiResponse.getData();
+                    mainHandler.post(() -> callback.onLoginComplete(new Result.Success<>(loggedInUser)));
                 }
             } catch (IOException e) {
                 mainHandler.post(() -> callback.onLoginComplete(new Result.Error(e)));

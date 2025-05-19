@@ -25,13 +25,7 @@ import android.widget.Toast;
 
 import com.timeless.saya.R;
 import com.timeless.saya.core.MainActivity;
-import com.timeless.saya.core.util.OnFragmentRemovedListener;
 import com.timeless.saya.databinding.FragmentLoginBinding;
-import com.timeless.saya.feature.auth.data.Result;
-import com.timeless.saya.feature.auth.data.model.LoggedInUser;
-import com.timeless.saya.feature.auth.data.remote.RemoteLoginDataSource;
-
-import java.util.NoSuchElementException;
 
 public class LoginFragment extends Fragment {
 
@@ -150,7 +144,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                if (binding.textView.getText().equals(getResources().getText(R.string.login_title))) {
+                if (!isRegister) {
                     loginViewModel.login(usernameEditText.getText().toString(),
                             passwordEditText.getText().toString());
                 } else {

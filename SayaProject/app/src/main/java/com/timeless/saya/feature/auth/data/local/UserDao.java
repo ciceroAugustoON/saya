@@ -4,11 +4,13 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.timeless.saya.di.Annotations.Shared;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
 
 import java.lang.reflect.Type;
 
 public class UserDao {
+    @Shared
     private final SharedPreferences prefs;
     private final Gson gson;
 

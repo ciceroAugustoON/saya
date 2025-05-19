@@ -7,11 +7,14 @@ public class LoggedInUser {
     private String userId;
     private String displayName;
 
+    private boolean objectivesDefined;
+
     private String token;
 
-    public LoggedInUser(String userId, String displayName, String token) {
+    public LoggedInUser(String userId, String displayName, boolean objectivesDefined, String token) {
         this.userId = userId;
         this.displayName = displayName;
+        this.objectivesDefined = objectivesDefined;
         this.token = token;
     }
 
@@ -29,5 +32,13 @@ public class LoggedInUser {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public boolean isObjectivesDefined() {
+        return objectivesDefined;
+    }
+
+    public void setObjectivesDefined(boolean objectivesDefined) {
+        this.objectivesDefined = objectivesDefined;
     }
 }

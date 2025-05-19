@@ -9,6 +9,17 @@
     android:orientation="horizontal"
     tools:context=".core.MainActivity">
 
+    <FrameLayout
+        android:id="@+id/taskListContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/header"
         android:name="com.timeless.saya.core.naviagtion.HeaderFragment"

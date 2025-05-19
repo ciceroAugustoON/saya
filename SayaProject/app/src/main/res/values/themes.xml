@@ -3,10 +3,16 @@
     <style name="Base.Theme.Saya" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorAccent">@color/green</item>
     </style>
+
     <style name="Button.Green" parent="ThemeOverlay.AppCompat">
         <item name="colorAccent">@color/green</item>
     </style>
 
 
     <style name="Theme.Saya" parent="Base.Theme.Saya" />
+
+    <style name="ThemeOverlay.SayaProject.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/normal_color_bg</item>
+        <item name="fullscreenTextColor">@color/normal_color_txt</item>
+    </style>
 </resources>

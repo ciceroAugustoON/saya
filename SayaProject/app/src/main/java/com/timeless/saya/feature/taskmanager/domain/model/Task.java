@@ -1,6 +1,6 @@
-package com.timeless.saya.feature.tasklist.domain.model;
+package com.timeless.saya.feature.taskmanager.domain.model;
 
-import com.timeless.saya.feature.tasklist.domain.model.enumeration.Difficulty;
+import com.timeless.saya.feature.objectives_manager.data.model.enumeration.Difficulty;
 public class Task {
     private Long id;
     private String name;

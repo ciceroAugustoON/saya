@@ -1,13 +1,10 @@
 package com.timeless.saya.feature.auth.data.repository;
 
-import android.util.Log;
-
 import com.timeless.saya.feature.auth.data.local.LocalLoginDataSource;
 import com.timeless.saya.feature.auth.data.remote.RemoteLoginDataSource;
-import com.timeless.saya.feature.auth.data.Result;
+import com.timeless.saya.core.data.Result;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
 import com.timeless.saya.feature.auth.domain.LoginCallback;
-import com.timeless.saya.feature.auth.presentation.LoginViewModel;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -40,6 +37,10 @@ public class LoginRepository implements LoginCallback{
     public boolean isLoggedIn() {
         return user != null;
     }
+
+    public boolean isObjectivesDefined() {
+        return user.isObjectivesDefined();
+    };
 
     public void logout() {
         user = null;
@@ -76,5 +77,10 @@ public class LoginRepository implements LoginCallback{
         }
 
         fatherLoginCallback.onLoginComplete(result);
+    }
+
+    public void reloadLoggedInUser(LoggedInUser data) {
+        setLoggedInUser(data);
+        localDataSource.saveLogin(data);
     }
 }

@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.tasklist.presentation;
+package com.timeless.saya.feature.taskmanager.presentation;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.timeless.saya.R;
-import com.timeless.saya.feature.tasklist.domain.model.Task;
-import com.timeless.saya.feature.tasklist.domain.util.TaskUtil;
+import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.core.util.HabitUtil;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class TaskViewAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            convertView = inflater.inflate(R.layout.list_task, parent, false);
             holder = new ViewHolder();
             holder.name = convertView.findViewById(R.id.task_name);
             holder.duration = convertView.findViewById(R.id.task_duration);
@@ -70,7 +70,7 @@ public class TaskViewAdapter extends BaseAdapter {
                 holder.medium.setColorFilter(Color.parseColor("#CECECE"));
             }
         }
-        holder.habit_icon.setImageResource(TaskUtil.habitToIcon(task));
+        holder.habit_icon.setImageResource(HabitUtil.habitToIcon(task.getHabit()));
 
         return convertView;
     }
