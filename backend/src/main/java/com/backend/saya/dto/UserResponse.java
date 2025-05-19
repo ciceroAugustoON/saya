@@ -1,17 +1,21 @@
 package com.backend.saya.dto;
 
+import com.backend.saya.entities.enumeration.Archetype;
+
 public class UserResponse {
     private Long userId;
     private String displayName;
+    private boolean objectivesDefined;
 
     private String token;
 
     public UserResponse() {
     }
 
-    public UserResponse(Long userId, String displayName, String token) {
+    public UserResponse(Long userId, String displayName, boolean objectivesDefined, String token) {
         this.userId = userId;
         this.displayName = displayName;
+        this.objectivesDefined = objectivesDefined;
         this.token = token;
     }
 
@@ -37,5 +41,13 @@ public class UserResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public boolean isObjectivesDefined() {
+        return objectivesDefined;
+    }
+
+    public void setObjectivesDefined(boolean objectivesDefined) {
+        this.objectivesDefined = objectivesDefined;
     }
 }

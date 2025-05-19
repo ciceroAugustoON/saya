@@ -1,6 +1,7 @@
 package com.backend.saya.services;
 
 import com.backend.saya.dto.ApiResponse;
+import com.backend.saya.dto.ObjectivesRequest;
 import com.backend.saya.dto.UserResponse;
 import com.backend.saya.entities.*;
 import com.backend.saya.entities.enumeration.Archetype;
@@ -22,10 +23,7 @@ import com.backend.saya.repositories.TokenAccessRepository;
 import com.backend.saya.repositories.UserRepository;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class LoginService {
@@ -59,7 +57,8 @@ public class LoginService {
 		}
 
 		TokenAccess token = loginSecurity.getTokenAccess(user.getId());
-		return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), identifier, token.getToken())));
+		boolean objectivesDefined = user.getObjectives() != null;
+		return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), identifier, objectivesDefined, token.getToken())));
 	}
 	
 	public ResponseEntity<ApiResponse> register(String email, String username, String password) {
@@ -84,7 +83,7 @@ public class LoginService {
 		user = userRepository.saveAndFlush(user);
 		if (user.getId() != null) {
 			TokenAccess token = loginSecurity.getTokenAccess(user.getId());
-			return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), username, token.getToken())));
+			return ResponseEntity.ok(ApiResponse.success(new UserResponse(token.getUserId(), username, false, token.getToken())));
 		} else {
 			return ResponseEntity.internalServerError()
 					.body(ApiResponse.error("Internal Server Error", "An error occurred while processing your registration. Please try again later."));
@@ -98,28 +97,22 @@ public class LoginService {
 		return Objects.equals(userRepository.save(user).getPassword(), password);
 	}
 
-	public ResponseEntity<ApiResponse> registerObjectives(String token, Objectives objectives) {
+	public ResponseEntity<ApiResponse> registerObjectives(String token, ObjectivesRequest objectivesRequest) {
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() != null) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error("Conflict", "This user already has objectives defined"));
 		}
-		for (Habit h : objectives.getHabitsHad()) {
-			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
-			objectives.removeHabitHad(h);
-			objectives.addHabitHad(h1);
-		}
-		for (Habit h : objectives.getDesiredHabits()) {
-			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
-			objectives.removeDesiredHabit(h);
-			objectives.addDesiredHabit(h1);
-		}
+		Objectives objectives = new Objectives(objectivesRequest.getDailySpendedHours(), objectivesRequest.getMetaReduction());
+		objectives.addAllDesiredHabits(habitRepository.findAllById(Arrays.asList(objectivesRequest.getDesiredHabits())));
+		objectives.addAllHabitsHad(habitRepository.findAllById(Arrays.asList(objectivesRequest.getHabitsHad())));
 
 		objectivesRepository.saveAndFlush(objectives);
 		user.setObjectives(objectives);
 		archetypeService.defineArchetype(user);
 		user = userRepository.saveAndFlush(user);
-		return ResponseEntity.ok(ApiResponse.success(user.getArchetype()));
+		UserResponse userResponse = new UserResponse(user.getId(), user.getUsername(), true, token);
+		return ResponseEntity.ok(ApiResponse.success(userResponse));
 	}
 
 

@@ -15,7 +15,9 @@ public class Objectives implements Serializable{
 	private Long id;
 	private Integer dailySpendedHours, metaReduction;
 	@OneToMany
-	private List<Habit> habitsHad, desiredHabits = new ArrayList<Habit>();
+	private List<Habit> habitsHad = new ArrayList<Habit>();
+	@OneToMany
+	private List<Habit> desiredHabits = new ArrayList<>();
 
 	
 	public Objectives() {

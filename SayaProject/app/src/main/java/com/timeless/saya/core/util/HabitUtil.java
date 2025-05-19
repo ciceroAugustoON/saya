@@ -1,7 +1,7 @@
-package com.timeless.saya.feature.tasklist.domain.util;
+package com.timeless.saya.feature.taskmanager.domain.util;
 
 import com.timeless.saya.R;
-import com.timeless.saya.feature.tasklist.domain.model.Task;
+import com.timeless.saya.feature.taskmanager.domain.model.Task;
 
 public class TaskUtil {
 

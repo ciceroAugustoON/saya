@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.tasklist.domain.model.enumeration;
+package com.timeless.saya.feature.habitsmanager.data.model.enumeration;
 
 public enum Difficulty {
 	EASY(1, 2),

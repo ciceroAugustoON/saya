@@ -1,6 +1,7 @@
 package com.backend.saya.controllers;
 
 import com.backend.saya.dto.ApiResponse;
+import com.backend.saya.dto.ObjectivesRequest;
 import com.backend.saya.dto.UserResponse;
 import com.backend.saya.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class LoginController {
 		return loginService.register(user.getEmail(), user.getUsername(), user.getPassword());
 	}
 	@PostMapping("/register/objectives")
-	public ResponseEntity<ApiResponse> registerObjectives(@RequestHeader String token, @RequestBody Objectives objectives) {
-		return loginService.registerObjectives(token, objectives);
+	public ResponseEntity<ApiResponse> registerObjectives(@RequestHeader String token, @RequestBody ObjectivesRequest objectivesRequest) {
+		return loginService.registerObjectives(token, objectivesRequest);
 	}
 	@PostMapping("/register/habits")
 	public User addHabits(@RequestHeader String token, @RequestBody Habits habits) {
