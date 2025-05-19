@@ -1,9 +1,11 @@
 package com.backend.saya.services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.backend.saya.dto.TaskResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class SayaService {
 	@Autowired
 	private WeekRepository weekRepository;
 
-	public List<Task> getUserTasks(String hashcode) {
+	public List<TaskResponse> getUserTasks(String hashcode) {
 		User user = getUser(hashcode);
 		String msg = isUserDefined(user);
 		if (msg != null) throw new NotFoundException(msg);
@@ -50,7 +52,16 @@ public class SayaService {
 			TaskGenerator.generate(user, taskRepository, relatoryRepository);
 			userRepository.saveAndFlush(user);
 		}
-		return user.getDailyTasks();
+		List<Task> tasks = user.getDailyTasks();
+		return tasksToResponse(tasks);
+	}
+
+	private List<TaskResponse> tasksToResponse(List<Task> tasks) {
+		List<TaskResponse> taskResponses = new ArrayList<>();
+		for (Task t : tasks) {
+			taskResponses.add(new TaskResponse(t.getId(), t.getName(), t.getDescription(), t.getDifficulty().getCode(), t.getTimeSecs(), t.getHabit().getName()));
+		}
+		return taskResponses;
 	}
 
 	public List<Task> finishUserTask(String token, Long taskId, Integer timeSecs) {

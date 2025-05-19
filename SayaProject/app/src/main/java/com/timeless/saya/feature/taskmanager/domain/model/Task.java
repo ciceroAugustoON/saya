@@ -5,7 +5,7 @@ public class Task {
     private Long id;
     private String name;
     private Integer timeSecs;
-    private Difficulty difficulty;
+    private Integer difficulty;
     private String description;
 
     private String habit;
@@ -13,7 +13,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(Long id, String name, Integer duration, Difficulty difficulty, String description, String habit) {
+    public Task(Long id, String name, Integer duration, Integer difficulty, String description, String habit) {
         this.id = id;
         this.name = name;
         this.timeSecs = duration;
@@ -47,14 +47,10 @@ public class Task {
     }
 
     public Difficulty getDifficulty() {
-        return difficulty;
+        return Difficulty.valueOf(difficulty);
     }
 
     public void setDifficulty(Integer difficulty) {
-        this.difficulty = Difficulty.valueOf(difficulty);
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 

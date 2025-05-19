@@ -2,6 +2,7 @@ package com.backend.saya.controllers;
 
 import java.util.List;
 
+import com.backend.saya.dto.TaskResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class SayaController {
 	private SayaService sayaService;
 	
 	@GetMapping("/tasks")
-	public List<Task> getUserTasks(@RequestHeader String token) {
+	public List<TaskResponse> getUserTasks(@RequestHeader String token) {
 		return sayaService.getUserTasks(token);
 	}
 	
