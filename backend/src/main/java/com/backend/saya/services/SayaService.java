@@ -1,19 +1,17 @@
 package com.backend.saya.services;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import com.backend.saya.dto.TaskResponse;
+import com.backend.saya.dto.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.backend.saya.entities.Relatory;
 import com.backend.saya.entities.Task;
 import com.backend.saya.entities.TokenAccess;
 import com.backend.saya.entities.User;
-import com.backend.saya.exceptions.NotFoundException;
 import com.backend.saya.repositories.RelatoryRepository;
 import com.backend.saya.repositories.TaskRepository;
 import com.backend.saya.repositories.TokenAccessRepository;
@@ -34,10 +32,10 @@ public class SayaService {
 	@Autowired
 	private WeekRepository weekRepository;
 
-	public List<TaskResponse> getUserTasks(String hashcode) {
+	public ApiResponse getUserTasks(String hashcode) {
 		User user = getUser(hashcode);
 		String msg = isUserDefined(user);
-		if (msg != null) throw new NotFoundException(msg);
+		if (msg != null) return ApiResponse.error(HttpStatus.NOT_FOUND.name(), msg);
 		if (user.getDailyTasksDate() == null) {
 			user.cleanTasks();
 			TaskGenerator.generate(user, taskRepository, relatoryRepository);
@@ -52,22 +50,13 @@ public class SayaService {
 			TaskGenerator.generate(user, taskRepository, relatoryRepository);
 			userRepository.saveAndFlush(user);
 		}
-		List<Task> tasks = user.getDailyTasks();
-		return tasksToResponse(tasks);
+		return ApiResponse.success(user.getDailyTasks());
 	}
 
-	private List<TaskResponse> tasksToResponse(List<Task> tasks) {
-		List<TaskResponse> taskResponses = new ArrayList<>();
-		for (Task t : tasks) {
-			taskResponses.add(new TaskResponse(t.getId(), t.getName(), t.getDescription(), t.getDifficulty().getCode(), t.getTimeSecs(), t.getHabit().getName()));
-		}
-		return taskResponses;
-	}
-
-	public List<Task> finishUserTask(String token, Long taskId, Integer timeSecs) {
+	public ApiResponse finishUserTask(String token, Long taskId, Integer timeSecs) {
 		User user = getUser(token);
 		String msg = isUserDefined(user);
-		if (msg != null) throw new NotFoundException(msg);
+		if (msg != null) return ApiResponse.error(HttpStatus.NOT_FOUND.name(), msg);
 		Task task = taskRepository.getReferenceById(taskId);
 		Relatory r = user.getRelatory();
 		if (r.getTasksQuantity() == user.getDailyTasks().size()) {
@@ -88,11 +77,11 @@ public class SayaService {
 
 		relatoryRepository.saveAndFlush(r);
 		userRepository.saveAndFlush(user);
-		return user.getDailyTasks();
+		return ApiResponse.success(user.getDailyTasks());
 	}
 
-	private User getUser(String hashcode) {
-		TokenAccess tokenAccess = tokenAccessRepository.findByToken(hashcode);
+	private User getUser(String token) {
+		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
 		return userRepository.getReferenceById(tokenAccess.getUserId());
 	}
 	

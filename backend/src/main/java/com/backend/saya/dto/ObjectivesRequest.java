@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ObjectivesRequest {
-    private int dailySpendedHours;
-    private int metaReduction;
-    private Long[] habitsHad;
-    private Long[] desiredHabits;
+    private Integer dailySpendedHours;
+    private Integer metaReduction;
+    private List<Long> habitsHad;
+    private List<Long> desiredHabits;
 }

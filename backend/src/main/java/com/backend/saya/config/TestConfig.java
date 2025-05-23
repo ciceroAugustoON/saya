@@ -2,6 +2,7 @@ package com.backend.saya.config;
 
 import java.util.List;
 
+import com.backend.saya.dto.UserRequest;
 import com.backend.saya.entities.enumeration.Segmentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -97,13 +98,6 @@ public class TestConfig implements CommandLineRunner{
 				task06, task07, task08, task09, task10, task11, task12, task13,
 				task14, task15, task16, task17, task18, task19, task20, task21,
 				task22, task23, task24));
-
-		loginService.register("a@gmail.com", "Ana", "asdf");
-		/*Objectives objectives = new Objectives(10, 2);
-		TokenAccess tokenAccess = loginService.register("a@gmail.com", "Ana", "asdf");
-		loginService.registerObjectives(tokenAccess.getToken(), objectives);
-		Habit[] habits = {habit, habit2};
-		loginService.registerHabits(tokenAccess.getToken(), habits);*/
 	}
 	
 }

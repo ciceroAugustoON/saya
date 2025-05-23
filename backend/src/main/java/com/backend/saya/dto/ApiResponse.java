@@ -1,33 +1,33 @@
 package com.backend.saya.dto;
 
+import lombok.Getter;
+
 public class ApiResponse {
-    private String error;
-    private String message;
-    private Object data;
+    @Getter
+    private final String error;
+    @Getter
+    private final String message;
+    @Getter
+    private final Object data;
+    private final boolean success;
 
     public static ApiResponse success(Object data) {
-        return new ApiResponse(null, null, data);
+        return new ApiResponse(null, null, data, true);
     }
 
     public static ApiResponse error(String error, String message) {
-        return new ApiResponse(error, message, null);
+        return new ApiResponse(error, message, null, false);
     }
 
-    private ApiResponse(String error, String message, Object data) {
+    private ApiResponse(String error, String message, Object data, boolean success) {
         this.error = error;
         this.message = message;
         this.data = data;
+        this.success = success;
     }
 
-    public String getError() {
-        return error;
+    public boolean isSuccessful() {
+        return success;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public Object getData() {
-        return data;
-    }
 }

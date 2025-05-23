@@ -1,12 +1,11 @@
 package com.backend.saya.controllers;
 
-import java.util.List;
-
-import com.backend.saya.dto.TaskResponse;
+import com.backend.saya.dto.ApiResponse;
+import com.backend.saya.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.backend.saya.entities.Task;
 import com.backend.saya.services.SayaService;
 
 @RestController
@@ -16,12 +15,12 @@ public class SayaController {
 	private SayaService sayaService;
 	
 	@GetMapping("/tasks")
-	public List<TaskResponse> getUserTasks(@RequestHeader String token) {
-		return sayaService.getUserTasks(token);
+	public ResponseEntity<ApiResponse> getUserTasks(@RequestHeader String token) {
+		return ResponseUtil.generateResponseEntity(sayaService.getUserTasks(token));
 	}
 	
 	@PutMapping("/tasks/{id}")
-	public List<Task> finishTask(@RequestHeader String token, @PathVariable Long id, @RequestParam Integer time) {
-		return sayaService.finishUserTask(token, id, time);
+	public ResponseEntity<ApiResponse> finishTask(@RequestHeader String token, @PathVariable Long id, @RequestParam(required = false) Integer time) {
+		return ResponseUtil.generateResponseEntity(sayaService.finishUserTask(token, id, time));
 	}
 }
