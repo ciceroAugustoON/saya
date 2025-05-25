@@ -1,19 +1,18 @@
 package com.backend.saya.entities;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-import com.backend.saya.entities.enumeration.Difficulty;
-import com.backend.saya.entities.enumeration.WeekDay;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_relatory")
+@Data
+@NoArgsConstructor
 public class Relatory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -25,56 +24,29 @@ public class Relatory implements Serializable {
 	private Integer tasksQuantity;
 	private Integer timeSave = 0;
 	private Integer totalTimeSave = 0;
-	private Integer habitsHadDone = 0;
-	private Integer desiredHabitsDone = 0;
-
-	public Relatory() {
-	}
+	@ElementCollection
+	@CollectionTable(name = "taskshabit", joinColumns = @JoinColumn(name = "entidade_id"))
+	@MapKeyColumn(name = "habit")
+	@Column(name = "tasks")
+	private Map<Long, Integer> tasksFinishedByHabit;
 
 	public Relatory(Long id, Integer points, Integer offensive) {
 		this.id = id;
 		this.points = points;
 		this.offensive = offensive;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Integer getPoints() {
-		return points;
+		this.tasksFinishedByHabit = new HashMap<>();
 	}
 
 	public void addPoints(Integer points) {
-		points += points;
-	}
-
-	public Integer getOffensive() {
-		return offensive;
+		this.points += points;
 	}
 
 	public void increaseOffensive() {
 		this.offensive++;
 	}
 
-	public void loseOffencive() {
+	public void loseOffensive() {
 		this.offensive = 0;
-	}
-
-	public Integer getTasksQuantity() {
-		return tasksQuantity;
-	}
-
-	public void setTasksQuantity(Integer tasksQuantity) {
-		this.tasksQuantity = tasksQuantity;
-	}
-
-	public Integer getTimeSave() {
-		return timeSave;
 	}
 
 	public void addTimeSaved(Integer time) {
@@ -82,24 +54,9 @@ public class Relatory implements Serializable {
 		addTotalTimeSave(time);
 	}
 
-	public Integer getHabitsHadDone() {
-		return habitsHadDone;
-	}
-
-	public void addHabitsHadDone() {
-		this.habitsHadDone += 1;
-	}
-
-	public Integer getDesiredHabitsDone() {
-		return desiredHabitsDone;
-	}
-
-	public void addDesiredHabitsDone() {
-		this.desiredHabitsDone += 1;
-	}
-
-	public Integer getTotalTimeSave() {
-		return totalTimeSave;
+	public void addTaskFinishedByHabit(Long habitId) {
+		Integer value = tasksFinishedByHabit.get(habitId) + 1;
+		tasksFinishedByHabit.put(habitId, value);
 	}
 
 	private void addTotalTimeSave(Integer timeSave) {

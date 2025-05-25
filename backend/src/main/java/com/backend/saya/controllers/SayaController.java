@@ -23,4 +23,9 @@ public class SayaController {
 	public ResponseEntity<ApiResponse> finishTask(@RequestHeader String token, @PathVariable Long id, @RequestParam(required = false) Integer time) {
 		return ResponseUtil.generateResponseEntity(sayaService.finishUserTask(token, id, time));
 	}
+
+	@GetMapping("/relatory")
+	public ResponseEntity<ApiResponse> getRelatory(@RequestHeader String token) {
+		return ResponseUtil.generateResponseEntity(sayaService.getRelatory(token));
+	}
 }

@@ -37,7 +37,7 @@ public class TaskGenerator {
 	}
 
 	private static void generateDailyTask(User user, TaskRepository taskRepository, Relatory relatory) {
-		Integer objective = relatory.getTimeSave() * (user.getObjectives().getMetaReduction() * 3600 / 8);
+		int objective = relatory.getTimeSave() * (user.getObjectives().getMetaReduction() * 3600 / 8);
 
 		List<Task> tasksHaded = getRelationTasks(user.getObjectives().getHabitsHad(), taskRepository);
 		List<Task> tasksDesired = getRelationTasks(user.getObjectives().getDesiredHabits(), taskRepository);
@@ -65,6 +65,8 @@ public class TaskGenerator {
 		user.getDailyTasks().addAll(tasks.stream()
 				.filter((t) -> t.getDifficulty().equals(Difficulty.HARD))
 				.toList().subList(0, sortedCombination[2]));
+
+		relatory.setTasksQuantity(user.getDailyTasks().size());
 	}
 
 	private static List<int[]> findCombinations(int easyMedia, int mediumMedia, int hardMedia, int objective, int margin) {
