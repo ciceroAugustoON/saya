@@ -5,7 +5,6 @@ import com.backend.saya.entities.*;
 import com.backend.saya.repositories.HabitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.backend.saya.exceptions.NotFoundException;
@@ -15,7 +14,6 @@ import com.backend.saya.repositories.UserRepository;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class LoginService {
