@@ -78,6 +78,7 @@ public class LoginService {
 
 	public ApiResponse registerObjectives(String token, ObjectivesRequest objectivesResponse) {
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
+		if (tokenAccess == null) return ApiResponse.error(HttpStatus.NOT_FOUND.name(), "This token is invalid");
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		Objectives objectives = new Objectives(objectivesResponse.getDailySpendedHours(), objectivesResponse.getMetaReduction());
 		objectives.addAllHabitsHad(habitRepository.findAllById(objectivesResponse.getHabitsHad()));
@@ -104,11 +105,22 @@ public class LoginService {
 	}
 
 	public ApiResponse addHabits(String token, HabitsRequest habitsRequest) {
+		if (habitsRequest.getDesiredHabitsIds() == null && habitsRequest.getHabitsHadIds() == null) return ApiResponse.error(HttpStatus.BAD_REQUEST.name(), "Body not provided");
+
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
+		if (tokenAccess == null) return ApiResponse.error(HttpStatus.NOT_FOUND.name(), "This token is invalid");
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() == null) {
 			return ApiResponse.error(HttpStatus.METHOD_NOT_ALLOWED.name(), "User doesn't have objectives defined");
 		}
+		List<Long> habitsIds = new ArrayList<>();
+		if (habitsRequest.getDesiredHabitsIds() != null) habitsIds.addAll(habitsRequest.getDesiredHabitsIds());
+		if (habitsRequest.getHabitsHadIds() != null) habitsIds.addAll(habitsRequest.getHabitsHadIds());
+		boolean hasConflict = user.getObjectives().getHabits().stream()
+				.anyMatch(habit -> habitsIds.contains(habit.getId()));
+
+		if (hasConflict) return ApiResponse.error(HttpStatus.CONFLICT.name(), "This habit already is added for this user");
+
 		if (habitsRequest.getHabitsHadIds() != null) {
 			user.getObjectives().addAllHabitsHad(habitRepository.findAllById(habitsRequest.getHabitsHadIds()));
 		}
@@ -122,7 +134,10 @@ public class LoginService {
 	}
 
 	public ApiResponse removeHabits(String token, HabitsRequest habitsRequest) {
+		if (habitsRequest.getDesiredHabitsIds() == null && habitsRequest.getHabitsHadIds() == null) return ApiResponse.error(HttpStatus.BAD_REQUEST.name(), "Body not provided");
+
 		TokenAccess tokenAccess = tokenAccessRepository.findByToken(token);
+		if (tokenAccess == null) return ApiResponse.error(HttpStatus.NOT_FOUND.name(), "This token is invalid");
 		User user = userRepository.getReferenceById(tokenAccess.getUserId());
 		if (user.getObjectives() == null) {
 			return ApiResponse.error(HttpStatus.METHOD_NOT_ALLOWED.name(), "User doesn't have objectives defined");

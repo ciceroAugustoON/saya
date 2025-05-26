@@ -55,12 +55,16 @@ public class Relatory implements Serializable {
 	}
 
 	public void addTaskFinishedByHabit(Long habitId) {
+		if (!tasksFinishedByHabit.containsKey(habitId)) {
+			tasksFinishedByHabit.put(habitId, 1);
+			return;
+		}
 		Integer value = tasksFinishedByHabit.get(habitId) + 1;
 		tasksFinishedByHabit.put(habitId, value);
 	}
 
 	private void addTotalTimeSave(Integer timeSave) {
-		this.totalTimeSave += totalTimeSave;
+		this.totalTimeSave += timeSave;
 	}
 
 	@Override
