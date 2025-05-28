@@ -1,10 +1,13 @@
 package com.backend.saya.services;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.backend.saya.dto.ApiResponse;
 import com.backend.saya.dto.RelatoryResponse;
+import com.backend.saya.dto.TaskResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -52,7 +55,11 @@ public class SayaService {
 			TaskGenerator.generate(user, taskRepository, relatoryRepository);
 			userRepository.saveAndFlush(user);
 		}
-		return ApiResponse.success(user.getDailyTasks());
+		List<TaskResponse> taskResponseList = new ArrayList<>();
+		for (Task t : user.getDailyTasks()) {
+			taskResponseList.add(new TaskResponse(t.getId(), t.getName(), t.getDescription(), t.getDifficulty().getCode(), t.getTimeSecs(), t.getHabit().getName()));
+		}
+		return ApiResponse.success(taskResponseList);
 	}
 
 	public ApiResponse finishUserTask(String token, Long taskId, Integer timeSecs) {

@@ -84,12 +84,14 @@ public class LoginService {
 		if (user.getObjectives() != null) {
 			return ApiResponse.error(HttpStatus.CONFLICT.name(), "This user already has objectives defined");
 		}
-		for (Habit h : objectives.getHabitsHad()) {
+        List<Habit> tempHabits = new ArrayList<>(objectives.getHabitsHad());
+		for (Habit h : tempHabits) {
 			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
 			objectives.removeHabitHad(h);
 			objectives.addHabitHad(h1);
 		}
-		for (Habit h : objectives.getDesiredHabits()) {
+		tempHabits = new ArrayList<>(objectives.getDesiredHabits());
+		for (Habit h : tempHabits) {
 			Habit h1 = habitRepository.findByName(h.getName()).orElse(new Habit());
 			objectives.removeDesiredHabit(h);
 			objectives.addDesiredHabit(h1);
