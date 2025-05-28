@@ -10,6 +10,6 @@ import retrofit2.http.GET;
 
 public interface HabitService {
 
-    @GET("/habits")
+    @GET("/api/v1/habits")
     public Call<ApiResponse<List<Habit>>> findAllHabits();
 }

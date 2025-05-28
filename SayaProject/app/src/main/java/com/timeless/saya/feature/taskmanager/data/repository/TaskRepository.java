@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.timeless.saya.core.api.ApiClient;
+import com.timeless.saya.core.api.ApiResponse;
 import com.timeless.saya.feature.taskmanager.data.local.TaskDao;
 import com.timeless.saya.feature.taskmanager.domain.model.Task;
 import com.timeless.saya.feature.taskmanager.data.remote.TaskService;
@@ -37,14 +38,16 @@ public class TaskRepository {
         } else {
             executor.execute(() -> {
                 try {
-                    Call<List<Task>> call = apiService.getTasks(token);
-                    Response<List<Task>> response = call.execute();
+                    Call<ApiResponse<List<Task>>> call = apiService.getTasks(token);
+                    Response<ApiResponse<List<Task>>> response = call.execute();
                     if (response.isSuccessful() && response.body() != null) {
-                        taskDao.insertAll(response.body());
+                        taskDao.insertAll(response.body().getData());
                         mainHandler.post(() -> taskListFragment.onLoadTasks(taskDao.getAll()));
+                    } else {
+                        mainHandler.post(() -> taskListFragment.onLoadTasks(null));
                     }
                 } catch (Exception e) {
-                    Log.e("TaskRepository", "Erro ao atualizar tasks", e);
+                    Log.e("TaskRepository", e.getMessage(), e);
                 }
             });
         }

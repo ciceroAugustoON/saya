@@ -21,4 +21,7 @@
     <string name="objectives_step_2">Selecione os Hábitos que você POSSUI:</string>
     <string name="objectives_step_3">Selecione os Hábitos que você DESEJA:</string>
     <string name="error_objectives">Erro ao registrar os objetivos</string>
+    <!-- String related to common errors -->
+    <string name="try_again_button_text">Tentar Novamente</string>
+    <string name="load_tasks_error">Houve um erro ao carregar suas tarefas</string>
 </resources>

@@ -125,10 +125,13 @@ public class ObjectivesManagerActivity extends AppCompatActivity implements Obje
     public void onPostObjectivesComplete(Result<LoggedInUser> result) {
         if (result instanceof Result.Error) {
             Toast.makeText(this.getApplicationContext(), getResources().getText(R.string.error_objectives), Toast.LENGTH_LONG).show();
+
         } else {
             loginRepository.reloadLoggedInUser(((Result.Success<LoggedInUser>)result).getData());
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            intent.putExtra("successful", true);
+            setResult(RESULT_OK, intent);
+            finish();
         }
 
     }

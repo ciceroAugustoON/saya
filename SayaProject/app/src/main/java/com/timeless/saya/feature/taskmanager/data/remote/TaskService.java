@@ -1,6 +1,7 @@
 package com.timeless.saya.feature.taskmanager.data.remote;
 
 
+import com.timeless.saya.core.api.ApiResponse;
 import com.timeless.saya.feature.taskmanager.domain.model.Task;
 
 import java.util.List;
@@ -11,8 +12,8 @@ import retrofit2.http.Header;
 
 public interface TaskService {
 
-    @GET("/user/tasks")
-    Call<List<Task>> getTasks(@Header("token") String token);
+    @GET("/api/v1/user/tasks")
+    Call<ApiResponse<List<Task>>> getTasks(@Header("token") String token);
 
 
 }

@@ -52,9 +52,11 @@ public class RemoteObjectivesDataSource {
                 Response<ApiResponse<LoggedInUser>> response = objectivesService.registerObjectives(token, objectives).execute();
                 if (response.isSuccessful()) {
                     mainHandler.post(() -> callback.onPostObjectivesComplete(new Result.Success<LoggedInUser>(response.body().getData())));
+                } else {
+                    mainHandler.post(() -> callback.onPostObjectivesComplete(new Result.Error(new Exception(response.message()))));
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                mainHandler.post(() -> callback.onPostObjectivesComplete(new Result.Error(e)));
             }
         });
     }

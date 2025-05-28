@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
 
     LoginRepository loginRepository;
 
+    int REQUEST_CODE = 5999;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +93,17 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
 
     private void loadHabitManagerActivity() {
         Intent intent = new Intent(this, ObjectivesManagerActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            boolean returnedValue = data.getBooleanExtra("successful", false);
+            loginRepository.toogleObjectivesDefined();
+            if (returnedValue) loadTaskFragment();
+        }
     }
 }
 

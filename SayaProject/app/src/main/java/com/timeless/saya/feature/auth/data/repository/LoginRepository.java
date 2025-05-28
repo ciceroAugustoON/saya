@@ -42,6 +42,12 @@ public class LoginRepository implements LoginCallback{
         return user.isObjectivesDefined();
     };
 
+    public boolean toogleObjectivesDefined() {
+        user.setObjectivesDefined(!user.isObjectivesDefined());
+        localDataSource.saveLogin(user);
+        return user.isObjectivesDefined();
+    }
+
     public void logout() {
         user = null;
         localDataSource.removeUser();

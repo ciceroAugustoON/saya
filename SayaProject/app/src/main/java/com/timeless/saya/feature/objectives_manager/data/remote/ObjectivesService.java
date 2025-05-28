@@ -13,6 +13,6 @@ import retrofit2.http.POST;
 
 public interface ObjectivesService {
 
-    @POST("access/register/objectives")
+    @POST("/api/v1/access/register/objectives")
     public Call<ApiResponse<LoggedInUser>> registerObjectives(@Header("token") String token, @Body Objectives objectives);
 }
