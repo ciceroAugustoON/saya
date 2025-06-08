@@ -24,4 +24,10 @@
     <!-- String related to common errors -->
     <string name="try_again_button_text">Tentar Novamente</string>
     <string name="load_tasks_error">Houve um erro ao carregar suas tarefas</string>
+    <!-- String related to relatory -->
+    <string name="offensive">Ofensiva: 0 dias</string>
+    <string name="time_saved">Tempo Salvo: 0h00m</string>
+    <string name="offensive_value">%d</string>
+    <string name="time_saved_value">%dh%dm</string>
+    <string name="task_finished_habit_relatory">%d tarefas concluídas</string>
 </resources>

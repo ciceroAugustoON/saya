@@ -1,6 +1,7 @@
-package com.timeless.saya.feature.taskmanager.presentation;
+package com.timeless.saya.feature.task_manager.presentation;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,12 +16,13 @@ import android.widget.TextView;
 
 import com.timeless.saya.R;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
-import com.timeless.saya.feature.taskmanager.data.repository.TaskRepository;
-import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.data.repository.TaskRepository;
+import com.timeless.saya.feature.task_manager.domain.TaskCallback;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
 
 import java.util.List;
 
-public class TaskListFragment extends Fragment {
+public class TaskListFragment extends Fragment implements TaskCallback {
 
     private ProgressBar loading;
     private ListView listView;
@@ -33,7 +35,11 @@ public class TaskListFragment extends Fragment {
 
     public TaskListFragment(LoginRepository loginRepository, Application application) {
         this.loginRepository = loginRepository;
-        taskRepository = new TaskRepository(application);
+        taskRepository = TaskRepository.getInstance(application);
+    }
+
+    public static Fragment newInstance(LoginRepository loginRepository, Application application) {
+        return new TaskListFragment(loginRepository, application);
     }
 
     @Override
@@ -54,7 +60,7 @@ public class TaskListFragment extends Fragment {
         taskRepository.getTasks(token, this);
         return view;
     }
-
+    @Override
     public void onLoadTasks(List<Task> tasks) {
         loading.setVisibility(View.GONE);
         if (tasks != null && !tasks.isEmpty()) {
@@ -72,5 +78,11 @@ public class TaskListFragment extends Fragment {
             });
         }
 
+    }
+
+    public void onTaskClicked(Task task) {
+        Intent intent = new Intent(this.getContext(), TaskDoing.class);
+        intent.putExtra("task_id", task.getId());
+        startActivity(intent);
     }
 }

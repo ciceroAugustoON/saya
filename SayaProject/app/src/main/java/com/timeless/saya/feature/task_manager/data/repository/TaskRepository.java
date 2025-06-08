@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.taskmanager.data.repository;
+package com.timeless.saya.feature.task_manager.data.repository;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -9,10 +9,10 @@ import android.util.Log;
 
 import com.timeless.saya.core.api.ApiClient;
 import com.timeless.saya.core.api.ApiResponse;
-import com.timeless.saya.feature.taskmanager.data.local.TaskDao;
-import com.timeless.saya.feature.taskmanager.domain.model.Task;
-import com.timeless.saya.feature.taskmanager.data.remote.TaskService;
-import com.timeless.saya.feature.taskmanager.presentation.TaskListFragment;
+import com.timeless.saya.feature.task_manager.data.local.TaskDao;
+import com.timeless.saya.feature.task_manager.domain.TaskCallback;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.data.remote.TaskService;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -22,19 +22,29 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class TaskRepository {
+
+    private static TaskRepository taskRepository;
+
     private TaskDao taskDao;
     private TaskService apiService;
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public TaskRepository(Application application) {
+    private TaskRepository(Application application) {
         taskDao = new TaskDao(application.getSharedPreferences("AppPrefs", MODE_PRIVATE));
         apiService = ApiClient.getService(TaskService.class);
     }
 
-    public void getTasks(String token, TaskListFragment taskListFragment) {
+    public static TaskRepository getInstance(Application application) {
+        if (taskRepository == null) {
+            taskRepository = new TaskRepository(application);
+        }
+        return taskRepository;
+    }
+
+    public void getTasks(String token, TaskCallback taskCallback) {
         if (taskDao.getAll() != null && !taskDao.getAll().isEmpty() && taskDao.isFromToday()) {
-            taskListFragment.onLoadTasks(taskDao.getAll());
+            taskCallback.onLoadTasks(taskDao.getAll());
         } else {
             executor.execute(() -> {
                 try {
@@ -42,9 +52,9 @@ public class TaskRepository {
                     Response<ApiResponse<List<Task>>> response = call.execute();
                     if (response.isSuccessful() && response.body() != null) {
                         taskDao.insertAll(response.body().getData());
-                        mainHandler.post(() -> taskListFragment.onLoadTasks(taskDao.getAll()));
+                        mainHandler.post(() -> taskCallback.onLoadTasks(taskDao.getAll()));
                     } else {
-                        mainHandler.post(() -> taskListFragment.onLoadTasks(null));
+                        mainHandler.post(() -> taskCallback.onLoadTasks(null));
                     }
                 } catch (Exception e) {
                     Log.e("TaskRepository", e.getMessage(), e);

@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.taskmanager.presentation;
+package com.timeless.saya.feature.task_manager.presentation;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.timeless.saya.R;
-import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
 import com.timeless.saya.core.util.HabitUtil;
 
 import java.util.List;

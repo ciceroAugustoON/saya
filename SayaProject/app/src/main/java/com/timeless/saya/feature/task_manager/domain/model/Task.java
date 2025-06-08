@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.taskmanager.domain.model;
+package com.timeless.saya.feature.task_manager.domain.model;
 
 import com.timeless.saya.feature.objectives_manager.data.model.enumeration.Difficulty;
 public class Task {
