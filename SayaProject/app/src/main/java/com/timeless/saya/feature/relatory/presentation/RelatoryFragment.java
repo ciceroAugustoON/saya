@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.timeless.saya.R;
 import com.timeless.saya.core.data.Result;
 import com.timeless.saya.core.util.HabitUtil;
+import com.timeless.saya.core.util.RemoteDataCallback;
 import com.timeless.saya.feature.auth.data.model.LoggedInUser;
 import com.timeless.saya.feature.objectives_manager.data.model.Habit;
 import com.timeless.saya.feature.objectives_manager.data.repository.ObjectivesRepository;
 import com.timeless.saya.feature.objectives_manager.domain.ObjectivesCallback;
 import com.timeless.saya.feature.relatory.data.model.Relatory;
+import com.timeless.saya.feature.relatory.data.repository.RelatoryRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,18 +32,23 @@ import java.util.Objects;
 
 public class RelatoryFragment extends Fragment {
     private ObjectivesRepository objectivesRepository;
+    private RelatoryRepository relatoryRepository;
 
     private TextView offensiveValue;
     private TextView timeSavedValue;
     private RecyclerView habitsRecyclerView;
     private HabitsAdapter habitsAdapter;
 
-    public static Fragment newInstance() {
-        return new RelatoryFragment();
+    private String token;
+
+    public static Fragment newInstance(String token) {
+        return new RelatoryFragment(token);
     }
 
-    public RelatoryFragment() {
-        this.objectivesRepository = ObjectivesRepository.getInstance();
+    public RelatoryFragment(String token) {
+        this.token = token;
+        objectivesRepository = ObjectivesRepository.getInstance();
+        relatoryRepository = RelatoryRepository.getInstance();
     }
 
     @Override
@@ -68,26 +75,19 @@ public class RelatoryFragment extends Fragment {
     }
 
     private void loadRelatoryData() {
-        Relatory relatory = new Relatory();
-        relatory.setOffensive(5);
-        relatory.setTimeSaved(120);
+        relatoryRepository.getRelatory(token, (data) -> {
+            objectivesRepository.getHabits(new ObjectivesCallback() {
+                @Override
+                public void onHabitsLoaded(List<Habit> habits) {
+                    updateUI(data, habits);
+                }
 
-        Map<Long, Integer> tasksMap = new HashMap<>();
-        tasksMap.put(1L, 3);
-        tasksMap.put(2L, 5);
-        relatory.setTasksFinishedByHabit(tasksMap);
-        objectivesRepository.getHabits(new ObjectivesCallback() {
-            @Override
-            public void onHabitsLoaded(List<Habit> habits) {
-                updateUI(relatory, habits);
-            }
+                @Override
+                public void onPostObjectivesComplete(Result<LoggedInUser> result) {
 
-            @Override
-            public void onPostObjectivesComplete(Result<LoggedInUser> result) {
-
-            }
+                }
+            });
         });
-
     }
 
     private void updateUI(Relatory relatory, List<Habit> habitList) {
@@ -96,16 +96,17 @@ public class RelatoryFragment extends Fragment {
         offensiveValue.setText(String.valueOf(relatory.getOffensive()));
         timeSavedValue.setText(String.valueOf(relatory.getTimeSaved()));
         List<HabitProgress> habits = new ArrayList<>();
-        for (Map.Entry<Long, Integer> entry : relatory.getTasksFinishedByHabit().entrySet()) {
-            Habit habit = habitList.stream().filter(h -> Objects.equals(h.getId(), entry.getKey())).findFirst().get();
+        if (!(relatory.getTasksFinishedByHabit() == null || relatory.getTasksFinishedByHabit().isEmpty())) {
+            for (Map.Entry<Long, Integer> entry : relatory.getTasksFinishedByHabit().entrySet()) {
+                Habit habit = habitList.stream().filter(h -> Objects.equals(h.getId(), entry.getKey())).findFirst().get();
 
-            habits.add(new HabitProgress(
-                    habit.getName(),
-                    entry.getValue(),
-                    HabitUtil.habitToIcon(habit.getName())
-            ));
+                habits.add(new HabitProgress(
+                        habit.getName(),
+                        entry.getValue(),
+                        HabitUtil.habitToIcon(habit.getName())
+                ));
+            }
         }
-
         habitsAdapter.updateData(habits);
     }
 

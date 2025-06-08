@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
                 return true;
             }
             if (item.getItemId() == R.id.statistic) {
-                loadFragment(R.id.contentTab, RelatoryFragment.newInstance());
+                loadFragment(R.id.contentTab, RelatoryFragment.newInstance(loginRepository.getToken()));
                 return true;
             }
             return false;
