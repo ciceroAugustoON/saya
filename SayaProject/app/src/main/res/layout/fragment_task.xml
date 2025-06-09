@@ -1,20 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chronometer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F2">
 
     <TextView
-        android:id="@+id/item_number"
-        android:layout_width="wrap_content"
+        android:id="@+id/task_name_textview"
+        android:layout_width="348dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/inter"
+        android:text="Task Name"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/content"
+        android:id="@+id/chronometer_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        android:fontFamily="monospace"
+        android:text="00:00:00"
+        android:textAlignment="center"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/init_task_imageButton"
+        android:layout_width="128dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/roundcorner"
+        android:contentDescription="Iniciar"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/play_solid"
+        app:tint="@color/dark_color_txt" />
+
+    <ImageButton
+        android:id="@+id/toggle_task_imageButton"
+        android:layout_width="95dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="32dp"
+        android:background="#00FFFFFF"
+        android:contentDescription="Iniciar"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/pause"
+        app:tint="@color/button_enabled" />
+
+    <ImageButton
+        android:id="@+id/finish_task_imageButton"
+        android:layout_width="95dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="32dp"
+        android:background="#00FFFFFF"
+        android:contentDescription="Iniciar"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/stop"
+        app:tint="@color/button_enabled" />
+</androidx.constraintlayout.widget.ConstraintLayout>
