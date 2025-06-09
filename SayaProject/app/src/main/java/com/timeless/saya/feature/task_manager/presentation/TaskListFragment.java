@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.taskmanager.presentation;
+package com.timeless.saya.feature.task_manager.presentation;
 
 import android.app.Application;
 import android.os.Bundle;
@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import com.timeless.saya.R;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
-import com.timeless.saya.feature.taskmanager.data.repository.TaskRepository;
-import com.timeless.saya.feature.taskmanager.domain.TaskCallback;
-import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.data.repository.TaskRepository;
+import com.timeless.saya.feature.task_manager.domain.TaskCallback;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
 
 import java.util.List;
 
@@ -33,6 +33,10 @@ public class TaskListFragment extends Fragment implements TaskCallback {
     private final LoginRepository loginRepository;
     private View currentView;
     private View oldView;
+
+    public static TaskListFragment newInstance(LoginRepository loginRepository, Application application, TaskCallback taskCallback) {
+        return new TaskListFragment(loginRepository, application, taskCallback);
+    }
 
     public TaskListFragment(LoginRepository loginRepository, Application application, TaskCallback taskCallback) {
         this.loginRepository = loginRepository;

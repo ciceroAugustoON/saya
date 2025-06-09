@@ -89,4 +89,9 @@ public class LoginRepository implements LoginCallback{
         setLoggedInUser(data);
         localDataSource.saveLogin(data);
     }
+
+    public void setObjectivesDefined(boolean b) {
+        user.setObjectivesDefined(b);
+        localDataSource.saveLogin(user);
+    }
 }

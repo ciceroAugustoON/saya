@@ -1,8 +1,8 @@
-package com.timeless.saya.feature.taskmanager.data.remote;
+package com.timeless.saya.feature.task_manager.data.remote;
 
 
 import com.timeless.saya.core.api.ApiResponse;
-import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
 
 import java.util.List;
 

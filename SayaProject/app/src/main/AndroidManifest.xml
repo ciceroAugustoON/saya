@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Saya"
         tools:targetApi="31">
         <activity
+            android:name=".feature.task_manager.presentation.TaskDoing"
+            android:exported="false" />
+        <activity
             android:name=".feature.objectives_manager.presentation.ObjectivesManagerActivity"
             android:exported="false" />
         <activity

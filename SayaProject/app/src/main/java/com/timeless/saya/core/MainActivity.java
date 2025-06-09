@@ -3,7 +3,6 @@ package com.timeless.saya.core;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,8 +23,12 @@ import com.timeless.saya.feature.auth.presentation.LoginFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.timeless.saya.feature.objectives_manager.presentation.ObjectivesManagerActivity;
 import com.timeless.saya.feature.relatory.presentation.RelatoryFragment;
+import com.timeless.saya.feature.task_manager.domain.TaskCallback;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.presentation.TaskFragment;
 import com.timeless.saya.feature.task_manager.presentation.TaskListFragment;
-import com.timeless.saya.feature.user_profile.presentation.UserProfileFragment;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements OnFragmentRemovedListener {
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
 
     private BottomNavigationView bottomNavigationView;
     private FragmentContainerView headerFragmentView;
+
+    private TaskCallback taskListCallback;
 
     LoginRepository loginRepository;
 
@@ -46,6 +51,36 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
         AppModule.setSharedPreferences(getSharedPreferences("AppPrefs", MODE_PRIVATE));
 
         loginRepository = LoginRepository.getInstance(new RemoteLoginDataSource(), new LocalLoginDataSource());
+
+        taskListCallback = new TaskCallback() {
+            private com.timeless.saya.feature.task_manager.presentation.TaskFragment taskFragment;
+
+            public void setFragment(com.timeless.saya.feature.task_manager.presentation.TaskFragment taskFragment) {
+                this.taskFragment = taskFragment;
+            }
+
+            @Override
+            public void onLoadTasks(List<Task> tasks) {
+
+            }
+
+            @Override
+            public void onTaskClicked(Task taskSelected) {
+                showFullContainerUI();
+                Fragment fragment = loadFragment(R.id.fullscreen_container, com.timeless.saya.feature.task_manager.presentation.TaskFragment.getInstance(taskSelected, getApplication(), this));
+                setFragment((TaskFragment) fragment);
+            }
+
+            @Override
+            public void onTaskFinished(List<Task> tasks) {
+                if (taskFragment == null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .remove(taskFragment)
+                            .commit();
+                    showMainUI();
+                }
+            }
+        };
 
         initializeViews();
         setupWindowInsets();
@@ -79,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
     private void setupNavigation() {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
-                loadFragment(R.id.contentTab, TaskListFragment.newInstance(loginRepository, getApplication()));
+                loadFragment(R.id.contentTab, TaskListFragment.newInstance(loginRepository, getApplication(), taskListCallback));
                 return true;
             }
             if (item.getItemId() == R.id.statistic) {
@@ -94,14 +129,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
         AppModule.setSharedPreferences(getSharedPreferences("AppPrefs", MODE_PRIVATE));
 
         if (!loginRepository.isLoggedIn()) {
-            showAuthUI();
+            showFullContainerUI();
             loadFragment(R.id.fullscreen_container, LoginFragment.newInstance());
         } else if (savedInstanceState == null) {
             handleFirstLaunch();
         }
     }
 
-    private void showAuthUI() {
+    private void showFullContainerUI() {
         headerFragmentView.setVisibility(View.INVISIBLE);
         bottomNavigationView.setVisibility(View.INVISIBLE);
         findViewById(R.id.fullscreen_container).setVisibility(View.VISIBLE);
@@ -117,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
         if (!loginRepository.isObjectivesDefined()) {
             loadObjectivesManagerActivity();
         } else {
-            loadFragment(R.id.contentTab, TaskListFragment.newInstance(loginRepository, getApplication()));
+            loadFragment(R.id.contentTab, TaskListFragment.newInstance(loginRepository, getApplication(), taskListCallback));
         }
     }
 
@@ -154,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
         boolean isSuccessful = data.getBooleanExtra("successful", false);
         if (isSuccessful) {
             loginRepository.setObjectivesDefined(true);
-            loadFragment(R.id.contentTab, TaskListFragment.newInstance(loginRepository, getApplication()));
+            loadFragment(R.id.contentTab, TaskListFragment.newInstance(loginRepository, getApplication(), taskListCallback));
         }
     }
 }

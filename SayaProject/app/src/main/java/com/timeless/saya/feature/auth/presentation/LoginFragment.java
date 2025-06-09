@@ -37,6 +37,10 @@ public class LoginFragment extends Fragment {
     public LoginFragment() {
     }
 
+    public static Fragment newInstance() {
+        return new LoginFragment();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

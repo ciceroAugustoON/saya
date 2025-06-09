@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.taskmanager.presentation;
+package com.timeless.saya.feature.task_manager.presentation;
 
 import android.app.Application;
 import android.content.Intent;
@@ -17,9 +17,9 @@ import androidx.fragment.app.Fragment;
 import com.timeless.saya.R;
 import com.timeless.saya.core.MainActivity;
 import com.timeless.saya.feature.auth.data.repository.LoginRepository;
-import com.timeless.saya.feature.taskmanager.data.repository.TaskRepository;
-import com.timeless.saya.feature.taskmanager.domain.TaskCallback;
-import com.timeless.saya.feature.taskmanager.domain.model.Task;
+import com.timeless.saya.feature.task_manager.data.repository.TaskRepository;
+import com.timeless.saya.feature.task_manager.domain.TaskCallback;
+import com.timeless.saya.feature.task_manager.domain.model.Task;
 
 import java.util.List;
 import java.util.Locale;
@@ -64,22 +64,7 @@ public class TaskFragment extends Fragment {
             binding.finishImageButton.setVisibility(View.VISIBLE);
             binding.finishImageButton.setOnClickListener((x) -> {
                 isExecuting = false;
-                taskRepository.finishTask(loginRepository.getToken(), task.getId(), seconds / 60, new TaskCallback() {
-                    @Override
-                    public void onLoadTasks(List<Task> tasks) {
-
-                    }
-
-                    @Override
-                    public void onTaskClicked(Task taskSelected) {
-
-                    }
-
-                    @Override
-                    public void onTaskFinished(List<Task> tasks) {
-                        close();
-                    }
-                });
+                taskRepository.finishTask(loginRepository.getToken(), task.getId(), seconds / 60, taskCallback);
             });
         });
 
@@ -105,17 +90,6 @@ public class TaskFragment extends Fragment {
                 handler.postDelayed(this, 1000);
             }
         });
-    }
-
-    private void close() {
-        MainActivity mainActivity = (MainActivity) this.getHost();
-        getParentFragmentManager()
-                .beginTransaction()
-                .remove(this)
-                .commit();
-        if (mainActivity != null) {
-            mainActivity.onFragmentRemoved();
-        }
     }
 
     private static class Binding {

@@ -55,11 +55,8 @@ public class SayaService {
 			TaskGenerator.generate(user, taskRepository, relatoryRepository);
 			userRepository.saveAndFlush(user);
 		}
-		List<TaskResponse> taskResponseList = new ArrayList<>();
-		for (Task t : user.getDailyTasks()) {
-			taskResponseList.add(new TaskResponse(t.getId(), t.getName(), t.getDescription(), t.getDifficulty().getCode(), t.getTimeSecs(), t.getHabit().getName()));
-		}
-		return ApiResponse.success(taskResponseList);
+
+		return ApiResponse.success(taskToResponse(user.getDailyTasks()));
 	}
 
 	public ApiResponse finishUserTask(String token, Long taskId, Integer timeSecs) {
@@ -85,7 +82,7 @@ public class SayaService {
 
 		relatoryRepository.saveAndFlush(r);
 		userRepository.saveAndFlush(user);
-		return ApiResponse.success(user.getDailyTasks());
+		return ApiResponse.success(taskToResponse(user.getDailyTasks()));
 	}
 
 	private User getUser(String token) {
@@ -112,4 +109,12 @@ public class SayaService {
 		RelatoryResponse relatoryResponse = new RelatoryResponse(relatory.getOffensive(), relatory.getTotalTimeSave(), relatory.getTasksFinishedByHabit());
 		return ApiResponse.success(relatoryResponse);
     }
+
+	private List<TaskResponse> taskToResponse(List<Task> tasks) {
+		List<TaskResponse> taskResponseList = new ArrayList<>();
+		for (Task t : tasks) {
+			taskResponseList.add(new TaskResponse(t.getId(), t.getName(), t.getDescription(), t.getDifficulty().getCode(), t.getTimeSecs(), t.getHabit().getName()));
+		}
+		return taskResponseList;
+	}
 }

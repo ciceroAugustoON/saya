@@ -1,4 +1,4 @@
-package com.timeless.saya.feature.taskmanager.presentation.placeholder;
+package com.timeless.saya.feature.task_manager.presentation.placeholder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
