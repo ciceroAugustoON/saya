@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentRemoved
 
             @Override
             public void onTaskFinished(List<Task> tasks) {
-                if (taskFragment == null) {
+                if (taskFragment != null) {
                     getSupportFragmentManager().beginTransaction()
                             .remove(taskFragment)
                             .commit();
